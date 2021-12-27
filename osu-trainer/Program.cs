@@ -14,17 +14,18 @@ namespace osu_trainer
         [STAThread]
         public static void Main()
         {
-            try
-            {
-                var updaterProc = Process.Start("updater.exe");
-                updaterProc.WaitForExit();
-            }
-            catch (Exception e)
-            {
-                // failed to update, who cares
-                Console.WriteLine("Failed to update lol");
-                Console.WriteLine(e);
-            }
+            // disable update for now
+            //try
+            //{
+            //    var updaterProc = Process.Start("updater.exe");
+            //    updaterProc.WaitForExit();
+            //}
+            //catch (Exception e)
+            //{
+            //    // failed to update, who cares
+            //    Console.WriteLine("Failed to update lol");
+            //    Console.WriteLine(e);
+            //}
 
             AddFont(FontCollection, Properties.Resources.Comfortaa_Bold);
 
