@@ -65,6 +65,7 @@ namespace osu_trainer
             this.formAnimationTimer = new System.Windows.Forms.Timer(this.components);
             this.extrasPanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
+            this.exportPanel = new System.Windows.Forms.Panel();
             this.ChangePitchCheck = new osu_trainer.Controls.OsuCheckBox();
             this.highQualityMp3Check = new osu_trainer.Controls.OsuCheckBox();
             this.NoSpinnersCheck = new osu_trainer.Controls.OsuCheckBox();
@@ -94,6 +95,7 @@ namespace osu_trainer
             this.hplabel = new osu_trainer.Controls.AntiAliasedLabel();
             this.HPSlider = new osu_trainer.OptionSlider();
             this.HPLockCheck = new osu_trainer.Controls.ToggleIconButton();
+            this.ExportBeatmapButton = new osu_trainer.Controls.OsuButton();
             this.ResetButton = new osu_trainer.Controls.OsuButton();
             this.GenerateMapButton = new osu_trainer.Controls.OsuButton();
             this.SongsFolderButton = new osu_trainer.Controls.OsuButton();
@@ -105,6 +107,7 @@ namespace osu_trainer
             this.TopPanel.SuspendLayout();
             this.titlePanel.SuspendLayout();
             this.extrasPanel.SuspendLayout();
+            this.exportPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // BeatmapUpdateTimer
@@ -475,7 +478,7 @@ namespace osu_trainer
             this.BottomPanel.Controls.Add(this.GenerateMapButton);
             this.BottomPanel.Controls.Add(this.SongsFolderButton);
             this.BottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.BottomPanel.Location = new System.Drawing.Point(0, 552);
+            this.BottomPanel.Location = new System.Drawing.Point(0, 584);
             this.BottomPanel.Name = "BottomPanel";
             this.BottomPanel.Padding = new System.Windows.Forms.Padding(10, 5, 10, 10);
             this.BottomPanel.Size = new System.Drawing.Size(427, 111);
@@ -602,6 +605,15 @@ namespace osu_trainer
             this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.DeleteButton_Click);
+            // 
+            // exportPanel
+            // 
+            this.exportPanel.Controls.Add(this.ExportBeatmapButton);
+            this.exportPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.exportPanel.Location = new System.Drawing.Point(0, 550);
+            this.exportPanel.Name = "exportPanel";
+            this.exportPanel.Size = new System.Drawing.Size(427, 34);
+            this.exportPanel.TabIndex = 3;
             // 
             // ChangePitchCheck
             // 
@@ -1135,6 +1147,28 @@ namespace osu_trainer
             this.HPLockCheck.UseVisualStyleBackColor = true;
             this.HPLockCheck.CheckedChanged += new System.EventHandler(this.HpLockCheck_CheckedChanged);
             // 
+            // ExportBeatmapButton
+            // 
+            this.ExportBeatmapButton.BrightnessRange = 0.01F;
+            this.ExportBeatmapButton.Color = System.Drawing.Color.DarkOliveGreen;
+            this.ExportBeatmapButton.FlatAppearance.BorderColor = System.Drawing.Color.DarkGray;
+            this.ExportBeatmapButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ExportBeatmapButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ExportBeatmapButton.ForeColor = System.Drawing.Color.White;
+            this.ExportBeatmapButton.Location = new System.Drawing.Point(10, 3);
+            this.ExportBeatmapButton.Name = "ExportBeatmapButton";
+            this.ExportBeatmapButton.Progress = 0F;
+            this.ExportBeatmapButton.ProgressColor = System.Drawing.Color.Transparent;
+            this.ExportBeatmapButton.Size = new System.Drawing.Size(407, 28);
+            this.ExportBeatmapButton.Subtext = "";
+            this.ExportBeatmapButton.SubtextColor = System.Drawing.Color.Empty;
+            this.ExportBeatmapButton.TabIndex = 3;
+            this.ExportBeatmapButton.Text = "Export Beatmap...";
+            this.ExportBeatmapButton.TextYOffset = 0;
+            this.ExportBeatmapButton.TriangleCount = 30;
+            this.ExportBeatmapButton.UseVisualStyleBackColor = true;
+            this.ExportBeatmapButton.Click += new System.EventHandler(this.ExportBeatmapButton_Click);
+            // 
             // ResetButton
             // 
             this.ResetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1225,10 +1259,11 @@ namespace osu_trainer
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(35)))), ((int)(((byte)(53)))));
-            this.ClientSize = new System.Drawing.Size(427, 663);
+            this.ClientSize = new System.Drawing.Size(427, 695);
             this.Controls.Add(this.extrasPanel);
             this.Controls.Add(this.middlePanel);
             this.Controls.Add(this.Middle1Panel);
+            this.Controls.Add(this.exportPanel);
             this.Controls.Add(this.BottomPanel);
             this.Controls.Add(this.TopPanel);
             this.Controls.Add(this.titlePanel);
@@ -1250,6 +1285,7 @@ namespace osu_trainer
             this.TopPanel.ResumeLayout(false);
             this.titlePanel.ResumeLayout(false);
             this.extrasPanel.ResumeLayout(false);
+            this.exportPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1321,5 +1357,7 @@ namespace osu_trainer
         private OsuCheckBox highQualityMp3Check;
         private OsuCheckBox updatesCheck;
         private System.Windows.Forms.Button spectrogramButton;
+        private System.Windows.Forms.Panel exportPanel;
+        private OsuButton ExportBeatmapButton;
     }
 }

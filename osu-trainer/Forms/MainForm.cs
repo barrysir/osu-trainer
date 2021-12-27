@@ -41,6 +41,8 @@ namespace osu_trainer
         private readonly SoundPlayer sound = new SoundPlayer();
         private readonly BeatmapEditor editor;
 
+        private ExportBeatmapForm exportBeatmapInstance = null;
+
         // other
         private string previousBeatmapRead;
 
@@ -984,14 +986,14 @@ namespace osu_trainer
                 // not ready layout
                 middlePanel.Height = 110;
                 BottomPanel.Height = 111;
-                Height = 493 + (extrasPanel.Visible ? extrasPanel.Height : 0);
+                Height = 493 + (exportPanel.Visible ? exportPanel.Height : 0) + (extrasPanel.Visible ? extrasPanel.Height : 0);
             }
             else
             {
                 // ready layout
                 middlePanel.Height = 178;
                 BottomPanel.Height = 111 - 33;
-                Height = 531 + (extrasPanel.Visible ? extrasPanel.Height : 0);
+                Height = 531 + (exportPanel.Visible ? exportPanel.Height : 0) + (extrasPanel.Visible ? extrasPanel.Height : 0);
             }
         }
         private void showExtrasButton_Click(object sender, EventArgs e)
@@ -1081,6 +1083,19 @@ namespace osu_trainer
                 var form = new SpectrogramForm(editor);
                 form.Show();
                 Location = new Point(Location.X, System.Math.Max(form.Height, Location.Y));
+            }
+        }
+
+        private void ExportBeatmapButton_Click(object sender, EventArgs e)
+        {
+            if (exportBeatmapInstance == null || exportBeatmapInstance.IsDisposed)
+            {
+                exportBeatmapInstance = new ExportBeatmapForm();
+                exportBeatmapInstance.Show();
+            }
+            else
+            {
+                exportBeatmapInstance.Activate();
             }
         }
     }
