@@ -42,12 +42,22 @@ namespace osu_trainer.Forms
         {
             this.minimizeButton = new System.Windows.Forms.Button();
             this.closeButton = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.exportSettings = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.exportModeLabel = new System.Windows.Forms.Label();
+            this.exportFolderLabel = new System.Windows.Forms.Label();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.exportFolderTextBox = new System.Windows.Forms.TextBox();
+            this.exportFolderBrowseButton = new System.Windows.Forms.Button();
+            this.exportMode = new System.Windows.Forms.ComboBox();
             this.exportButtonPanel = new System.Windows.Forms.Panel();
             this.panelForMargin = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.exportBeatmapButton = new osu_trainer.Controls.OsuButton();
             this.uploadBeatmapButton = new osu_trainer.Controls.OsuButton();
+            this.exportSettings.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             this.exportButtonPanel.SuspendLayout();
             this.panelForMargin.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -67,21 +77,113 @@ namespace osu_trainer.Forms
             this.closeButton.Size = new System.Drawing.Size(75, 23);
             this.closeButton.TabIndex = 0;
             // 
-            // panel1
+            // exportSettings
             // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 39);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(340, 100);
-            this.panel1.TabIndex = 15;
+            this.exportSettings.Controls.Add(this.tableLayoutPanel2);
+            this.exportSettings.Dock = System.Windows.Forms.DockStyle.Top;
+            this.exportSettings.Location = new System.Drawing.Point(0, 39);
+            this.exportSettings.Name = "exportSettings";
+            this.exportSettings.Size = new System.Drawing.Size(435, 100);
+            this.exportSettings.TabIndex = 15;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 115F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.exportModeLabel, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.exportFolderLabel, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel3, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.exportMode, 1, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(435, 100);
+            this.tableLayoutPanel2.TabIndex = 17;
+            // 
+            // exportModeLabel
+            // 
+            this.exportModeLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.exportModeLabel.AutoSize = true;
+            this.exportModeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(154)))), ((int)(((byte)(233)))));
+            this.exportModeLabel.Location = new System.Drawing.Point(10, 7);
+            this.exportModeLabel.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
+            this.exportModeLabel.Name = "exportModeLabel";
+            this.exportModeLabel.Size = new System.Drawing.Size(87, 17);
+            this.exportModeLabel.TabIndex = 11;
+            this.exportModeLabel.Text = "Export Mode";
+            this.exportModeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // exportFolderLabel
+            // 
+            this.exportFolderLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.exportFolderLabel.AutoSize = true;
+            this.exportFolderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(154)))), ((int)(((byte)(233)))));
+            this.exportFolderLabel.Location = new System.Drawing.Point(10, 40);
+            this.exportFolderLabel.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
+            this.exportFolderLabel.Name = "exportFolderLabel";
+            this.exportFolderLabel.Size = new System.Drawing.Size(91, 17);
+            this.exportFolderLabel.TabIndex = 12;
+            this.exportFolderLabel.Text = "Export Folder";
+            this.exportFolderLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel3.Controls.Add(this.exportFolderTextBox, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.exportFolderBrowseButton, 1, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(115, 31);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(320, 35);
+            this.tableLayoutPanel3.TabIndex = 15;
+            // 
+            // exportFolderTextBox
+            // 
+            this.exportFolderTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.exportFolderTextBox.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.exportFolderTextBox.Location = new System.Drawing.Point(3, 5);
+            this.exportFolderTextBox.Name = "exportFolderTextBox";
+            this.exportFolderTextBox.Size = new System.Drawing.Size(234, 25);
+            this.exportFolderTextBox.TabIndex = 13;
+            // 
+            // exportFolderBrowseButton
+            // 
+            this.exportFolderBrowseButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.exportFolderBrowseButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.exportFolderBrowseButton.Location = new System.Drawing.Point(243, 6);
+            this.exportFolderBrowseButton.Name = "exportFolderBrowseButton";
+            this.exportFolderBrowseButton.Size = new System.Drawing.Size(74, 23);
+            this.exportFolderBrowseButton.TabIndex = 14;
+            this.exportFolderBrowseButton.Text = "Browse";
+            this.exportFolderBrowseButton.UseVisualStyleBackColor = true;
+            this.exportFolderBrowseButton.Click += new System.EventHandler(this.exportFolderBrowseButton_Click);
+            // 
+            // exportMode
+            // 
+            this.exportMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.exportMode.FormattingEnabled = true;
+            this.exportMode.Location = new System.Drawing.Point(118, 3);
+            this.exportMode.Name = "exportMode";
+            this.exportMode.Size = new System.Drawing.Size(121, 25);
+            this.exportMode.TabIndex = 16;
             // 
             // exportButtonPanel
             // 
             this.exportButtonPanel.Controls.Add(this.panelForMargin);
             this.exportButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.exportButtonPanel.Location = new System.Drawing.Point(0, 326);
+            this.exportButtonPanel.Location = new System.Drawing.Point(0, 202);
             this.exportButtonPanel.Name = "exportButtonPanel";
-            this.exportButtonPanel.Size = new System.Drawing.Size(340, 35);
+            this.exportButtonPanel.Size = new System.Drawing.Size(435, 35);
             this.exportButtonPanel.TabIndex = 0;
             // 
             // panelForMargin
@@ -90,7 +192,7 @@ namespace osu_trainer.Forms
             this.panelForMargin.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelForMargin.Location = new System.Drawing.Point(0, 0);
             this.panelForMargin.Name = "panelForMargin";
-            this.panelForMargin.Size = new System.Drawing.Size(340, 35);
+            this.panelForMargin.Size = new System.Drawing.Size(435, 35);
             this.panelForMargin.TabIndex = 1;
             // 
             // tableLayoutPanel1
@@ -106,7 +208,7 @@ namespace osu_trainer.Forms
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(340, 35);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(435, 35);
             this.tableLayoutPanel1.TabIndex = 17;
             // 
             // exportBeatmapButton
@@ -121,7 +223,7 @@ namespace osu_trainer.Forms
             this.exportBeatmapButton.Name = "exportBeatmapButton";
             this.exportBeatmapButton.Progress = 0F;
             this.exportBeatmapButton.ProgressColor = System.Drawing.Color.Transparent;
-            this.exportBeatmapButton.Size = new System.Drawing.Size(208, 29);
+            this.exportBeatmapButton.Size = new System.Drawing.Size(267, 29);
             this.exportBeatmapButton.Subtext = "";
             this.exportBeatmapButton.SubtextColor = System.Drawing.Color.Empty;
             this.exportBeatmapButton.TabIndex = 0;
@@ -129,6 +231,7 @@ namespace osu_trainer.Forms
             this.exportBeatmapButton.TextYOffset = 0;
             this.exportBeatmapButton.TriangleCount = 30;
             this.exportBeatmapButton.UseVisualStyleBackColor = true;
+            this.exportBeatmapButton.Click += new System.EventHandler(this.exportBeatmapButton_Click);
             // 
             // uploadBeatmapButton
             // 
@@ -136,12 +239,12 @@ namespace osu_trainer.Forms
             this.uploadBeatmapButton.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.uploadBeatmapButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uploadBeatmapButton.ForeColor = System.Drawing.Color.White;
-            this.uploadBeatmapButton.Location = new System.Drawing.Point(214, 3);
+            this.uploadBeatmapButton.Location = new System.Drawing.Point(273, 3);
             this.uploadBeatmapButton.Margin = new System.Windows.Forms.Padding(1, 3, 3, 3);
             this.uploadBeatmapButton.Name = "uploadBeatmapButton";
             this.uploadBeatmapButton.Progress = 0F;
             this.uploadBeatmapButton.ProgressColor = System.Drawing.Color.Transparent;
-            this.uploadBeatmapButton.Size = new System.Drawing.Size(123, 29);
+            this.uploadBeatmapButton.Size = new System.Drawing.Size(159, 29);
             this.uploadBeatmapButton.Subtext = "";
             this.uploadBeatmapButton.SubtextColor = System.Drawing.Color.Empty;
             this.uploadBeatmapButton.TabIndex = 1;
@@ -154,15 +257,20 @@ namespace osu_trainer.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(340, 361);
+            this.ClientSize = new System.Drawing.Size(435, 237);
             this.Controls.Add(this.exportButtonPanel);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.exportSettings);
             this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "ExportBeatmapForm";
             this.Text = "Export Beatmap";
             this.Load += new System.EventHandler(this.ExportBeatmapForm_Load);
-            this.Controls.SetChildIndex(this.panel1, 0);
+            this.Controls.SetChildIndex(this.exportSettings, 0);
             this.Controls.SetChildIndex(this.exportButtonPanel, 0);
+            this.exportSettings.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.exportButtonPanel.ResumeLayout(false);
             this.panelForMargin.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -175,11 +283,18 @@ namespace osu_trainer.Forms
 
         private Button minimizeButton;
         private Button closeButton;
-        private Panel panel1;
+        private Panel exportSettings;
         private Panel exportButtonPanel;
         private Panel panelForMargin;
         private TableLayoutPanel tableLayoutPanel1;
         private Controls.OsuButton exportBeatmapButton;
         private Controls.OsuButton uploadBeatmapButton;
+        private TableLayoutPanel tableLayoutPanel2;
+        private Label exportModeLabel;
+        private Label exportFolderLabel;
+        private TextBox exportFolderTextBox;
+        private Button exportFolderBrowseButton;
+        private TableLayoutPanel tableLayoutPanel3;
+        private ComboBox exportMode;
     }
 }
