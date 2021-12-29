@@ -128,6 +128,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseForms\BorderlessWindowForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BaseForms\BorderlessWindowForm.Designer.cs">
+      <DependentUpon>BorderlessWindowForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="BeatmapEditor.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="Controls\AdvancedControl.cs">
@@ -280,8 +286,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BaseForms\BorderlessWindowForm.resx">
+      <DependentUpon>BorderlessWindowForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\DeleteMp3sForm.resx">
       <DependentUpon>DeleteMp3sForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExportBeatmapForm.resx">
+      <DependentUpon>ExportBeatmapForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\HotkeyForm.resx">
       <DependentUpon>HotkeyForm.cs</DependentUpon>

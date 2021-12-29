@@ -10,11 +10,17 @@ using System.Windows.Forms;
 
 namespace osu_trainer.Forms
 {
-    public partial class ExportBeatmapForm : Form
+    public partial class ExportBeatmapForm : BaseForms.BorderlessWindowForm
     {
         public ExportBeatmapForm()
         {
             InitializeComponent();
         }
+
+        private void ExportBeatmapForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
