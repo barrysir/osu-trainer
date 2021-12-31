@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FsBeatmapProcessor;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using osu_trainer.Controls;
 
@@ -80,6 +81,33 @@ namespace osu_trainer.Forms
             this.uploadBeatmapButtonActivator.setActivated(state);
         }
 
+        private string ExportBeatmap(string exportPath, ExportModeStruct selectedMode, Beatmap beatmap)
+        {
+            Func<string> makeFull = () => {
+                string songsFolder = Path.GetDirectoryName(beatmap.Filename);
+                return this.editor.makeOszOfFolder(exportPath, songsFolder);
+            };
+
+            Func<bool, bool, string> makeOsu = (bool withBg, bool withMp3) => {
+                return this.editor.makeOszOfBeatmap(exportPath, beatmap, withBg, withMp3);
+            };
+
+            // rewrite this as ReportProgress()?
+            switch (selectedMode.Value)
+            {
+                case ExportMode.FULL:
+                    return makeFull();
+                case ExportMode.OSU_MP3_BG:
+                    return makeOsu(true, true);
+                case ExportMode.OSU_MP3:
+                    return makeOsu(false, true);
+                case ExportMode.OSU:
+                    return makeOsu(false, false);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private void exportFolderBrowseButton_Click(object sender, EventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
@@ -111,33 +139,9 @@ namespace osu_trainer.Forms
             //Console.WriteLine(this.editor.NewBeatmap.Filename);
             //Console.WriteLine(this.editor.OriginalBeatmap.Filename);
 
-            // maybe move this to a function exportBeatmap() or something
-            Action makeFull = () => {
-                string songsFolder = Path.GetDirectoryName(this.editor.RawBeatmap.Filename);
-                this.editor.makeOszOfFolder(exportPath, songsFolder);
-            };
-
-            Action<bool, bool> makeOsu = (bool withBg, bool withMp3) => {
-                this.editor.makeOszOfBeatmap(exportPath, this.editor.RawBeatmap, withBg, withMp3);
-            };
-
             // rewrite this as ReportProgress()?
             this.Invoke(new Action(() => SetWorkingButtons(false)));
-            switch (selectedMode.Value)
-            {
-                case ExportMode.FULL:
-                    makeFull();
-                    break;
-                case ExportMode.OSU_MP3_BG:
-                    makeOsu(true, true);
-                    break;
-                case ExportMode.OSU_MP3:
-                    makeOsu(false, true);
-                    break;
-                case ExportMode.OSU:
-                    makeOsu(false, false);
-                    break;
-            }
+            ExportBeatmap(exportPath, selectedMode, this.editor.RawBeatmap);
             this.Invoke(new Action(() => SetWorkingButtons(true)));
         }
     }
