@@ -1090,7 +1090,7 @@ namespace osu_trainer
         {
             if (exportBeatmapInstance == null || exportBeatmapInstance.IsDisposed)
             {
-                exportBeatmapInstance = new ExportBeatmapForm();
+                exportBeatmapInstance = new ExportBeatmapForm(editor);
                 exportBeatmapInstance.Show();
             }
             else

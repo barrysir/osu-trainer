@@ -38,10 +38,12 @@ namespace osu_trainer.Forms
         }
 
         private List<ExportModeStruct> exportModeList;
+        private BeatmapEditor editor;
 
-        public ExportBeatmapForm()
+        public ExportBeatmapForm(BeatmapEditor edit)
         {
             InitializeComponent();
+            this.editor = edit;
         }
 
         private void ExportBeatmapForm_Load(object sender, EventArgs e)
@@ -64,7 +66,7 @@ namespace osu_trainer.Forms
             exportMode.SelectedIndex = 0;
         }
 
-        public static string DefaultExportFolder() => Path.GetFullPath(Path.Combine(Properties.Settings.Default.SongsFolder, "../Exports"));
+        public static string DefaultExportFolder() => Path.GetFullPath("."); // Path.GetFullPath(Path.Combine(Properties.Settings.Default.SongsFolder, "../Exports"));
 
         private void exportFolderBrowseButton_Click(object sender, EventArgs e)
         {
@@ -80,8 +82,35 @@ namespace osu_trainer.Forms
         {
             ExportModeStruct selected = exportModeList[exportMode.SelectedIndex];
             string path = exportFolderTextBox.Text;
-            Console.WriteLine(selected.Value);
-            Console.WriteLine(path);
+            //Console.WriteLine(selected.Value);
+            //Console.WriteLine(path);
+            //Console.WriteLine(this.editor.NewBeatmap.Filename);
+            //Console.WriteLine(this.editor.OriginalBeatmap.Filename);
+
+            Action makeFull = () => {
+                string songsFolder = Path.GetDirectoryName(this.editor.RawBeatmap.Filename);
+                this.editor.makeOszOfFolder(path, songsFolder);
+            };
+
+            Action<bool, bool> makeOsu = (bool withBg, bool withMp3) => {
+                this.editor.makeOszOfBeatmap(path, this.editor.RawBeatmap, withBg, withMp3);
+            };
+
+            switch (selected.Value)
+            {
+                case ExportMode.FULL:
+                    makeFull();
+                    break;
+                case ExportMode.OSU_MP3_BG:
+                    makeOsu(true, true);
+                    break;
+                case ExportMode.OSU_MP3:
+                    makeOsu(false, true);
+                    break;
+                case ExportMode.OSU:
+                    makeOsu(false, false);
+                    break;
+            }
         }
     }
 }
