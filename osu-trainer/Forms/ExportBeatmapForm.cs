@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using osu_trainer.Controls;
 
 namespace osu_trainer.Forms
 {
@@ -39,11 +40,15 @@ namespace osu_trainer.Forms
 
         private List<ExportModeStruct> exportModeList;
         private BeatmapEditor editor;
+        private OsuButtonActivator exportBeatmapButtonActivator;
+        private OsuButtonActivator uploadBeatmapButtonActivator;
 
         public ExportBeatmapForm(BeatmapEditor edit)
         {
             InitializeComponent();
             this.editor = edit;
+            this.exportBeatmapButtonActivator = new OsuButtonActivator(exportBeatmapButton);
+            this.uploadBeatmapButtonActivator = new OsuButtonActivator(uploadBeatmapButton);
         }
 
         private void ExportBeatmapForm_Load(object sender, EventArgs e)
@@ -68,6 +73,13 @@ namespace osu_trainer.Forms
 
         public static string DefaultExportFolder() => Path.GetFullPath("."); // Path.GetFullPath(Path.Combine(Properties.Settings.Default.SongsFolder, "../Exports"));
 
+        // todo: name this
+        private void SetWorkingButtons(bool state)
+        {
+            this.exportBeatmapButtonActivator.setActivated(state);
+            this.uploadBeatmapButtonActivator.setActivated(state);
+        }
+
         private void exportFolderBrowseButton_Click(object sender, EventArgs e)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
@@ -80,23 +92,38 @@ namespace osu_trainer.Forms
 
         private void exportBeatmapButton_Click(object sender, EventArgs e)
         {
-            ExportModeStruct selected = exportModeList[exportMode.SelectedIndex];
-            string path = exportFolderTextBox.Text;
+            exportOrUploadWorker.RunWorkerAsync();
+        }
+
+        private void exportOrUploadWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            (ExportModeStruct selectedMode, string exportPath) =
+               ((ExportModeStruct, string)) this.Invoke(new Func<(ExportModeStruct, string)>(() =>
+                {
+                    selectedMode = exportModeList[exportMode.SelectedIndex];
+                    exportPath = exportFolderTextBox.Text;
+                    return (selectedMode, exportPath);
+                }))
+            ;
+
             //Console.WriteLine(selected.Value);
             //Console.WriteLine(path);
             //Console.WriteLine(this.editor.NewBeatmap.Filename);
             //Console.WriteLine(this.editor.OriginalBeatmap.Filename);
 
+            // maybe move this to a function exportBeatmap() or something
             Action makeFull = () => {
                 string songsFolder = Path.GetDirectoryName(this.editor.RawBeatmap.Filename);
-                this.editor.makeOszOfFolder(path, songsFolder);
+                this.editor.makeOszOfFolder(exportPath, songsFolder);
             };
 
             Action<bool, bool> makeOsu = (bool withBg, bool withMp3) => {
-                this.editor.makeOszOfBeatmap(path, this.editor.RawBeatmap, withBg, withMp3);
+                this.editor.makeOszOfBeatmap(exportPath, this.editor.RawBeatmap, withBg, withMp3);
             };
 
-            switch (selected.Value)
+            // rewrite this as ReportProgress()?
+            this.Invoke(new Action(() => SetWorkingButtons(false)));
+            switch (selectedMode.Value)
             {
                 case ExportMode.FULL:
                     makeFull();
@@ -111,6 +138,56 @@ namespace osu_trainer.Forms
                     makeOsu(false, false);
                     break;
             }
+            this.Invoke(new Action(() => SetWorkingButtons(true)));
         }
     }
+
+    public class OsuButtonActivator
+    {
+        OsuButton button;
+        Color savedForeColor;
+        Color savedColor;
+
+        private Color disabledForeColor = Colors.Disabled;
+        private Color disabledColor = Colors.TextBoxBg;
+
+        public OsuButtonActivator(OsuButton button)
+        {
+            this.button = button;
+            this.savedForeColor = disabledForeColor;
+            this.savedColor = disabledColor;
+        }
+
+        private Color switchColors(bool activate, Color buttonColor, ref Color savedColor, ref Color disabledColor)
+        {
+            if (activate)
+            {
+                // if button is disabled then change to saved color,
+                // otherwise don't touch the color of the button
+                if (buttonColor == disabledColor)
+                {
+                    return savedColor;
+                }
+                return buttonColor;
+            }
+            else
+            {
+                // only save the color if button is not already disabled
+                if (buttonColor != disabledColor)
+                {
+                    savedColor = buttonColor;
+                }
+                return disabledColor;
+            }
+        }
+
+        public bool setActivated(bool activate)
+        {
+            button.Enabled = activate;
+            button.ForeColor = switchColors(activate, button.ForeColor, ref savedForeColor, ref disabledForeColor);
+            button.Color = switchColors(activate, button.Color, ref savedColor, ref disabledColor);
+            return true;
+        }
+    }
+
 }

@@ -55,6 +55,7 @@ namespace osu_trainer.Forms
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.exportBeatmapButton = new osu_trainer.Controls.OsuButton();
             this.uploadBeatmapButton = new osu_trainer.Controls.OsuButton();
+            this.exportOrUploadWorker = new System.ComponentModel.BackgroundWorker();
             this.exportSettings.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -253,6 +254,10 @@ namespace osu_trainer.Forms
             this.uploadBeatmapButton.TriangleCount = 30;
             this.uploadBeatmapButton.UseVisualStyleBackColor = true;
             // 
+            // exportOrUploadWorker
+            // 
+            this.exportOrUploadWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.exportOrUploadWorker_DoWork);
+            // 
             // ExportBeatmapForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -296,5 +301,6 @@ namespace osu_trainer.Forms
         private Button exportFolderBrowseButton;
         private TableLayoutPanel tableLayoutPanel3;
         private ComboBox exportMode;
+        private BackgroundWorker exportOrUploadWorker;
     }
 }
