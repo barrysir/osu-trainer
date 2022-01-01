@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -136,11 +137,69 @@ namespace osu_trainer.Forms
                     throw new ArgumentOutOfRangeException();
             }
         }
-        private bool UploadBeatmap(string oszPath, UploadModeStruct uploadingMode)
+
+        private (bool, string) UploadWithShareX(string path)
+        {
+            Process sharex = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "sharex.exe",
+                    Arguments = $"\"{path}\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8
+                }
+            };
+
+            // clipboard text can only be fetched on a "STA thread"
+            // so I have to do this hack and get it from the main thread...
+            Func<string> getClipboard = () =>
+            {
+                return (string)this.Invoke(new Func<string>(() => Clipboard.GetText()));
+            };
+
+            string prevClipboard = getClipboard();
+            sharex.Start();
+            // can't do this, because if sharex wasn't already running then this waits forever
+            //sharex.WaitForExit();
+
+            // sharex commandline doesn't do anything -- it just returns immediately and tells
+            // the running sharex instance to upload the file
+
+            // we do some weird hacking here to try to detect when the upload finishes
+            // by checking the clipboard and querying whether another process is using the file
+            // we also grab the url from the clipboard as a bonus
+
+            // maybe pause for a bit to let sharex start processing?
+            //System.Threading.Thread.Sleep(1000);
+            string urlFromClipboardMaybe = prevClipboard;
+            FileInfo myFileInfo = new FileInfo(path);
+            while (true)
+            {
+                urlFromClipboardMaybe = getClipboard();
+                if (!JunUtils.IsFileLocked(myFileInfo) && urlFromClipboardMaybe != prevClipboard)
+                {
+                    break;
+                }
+                System.Threading.Thread.Sleep(500);
+            }
+            Console.WriteLine(urlFromClipboardMaybe);
+            return (true, urlFromClipboardMaybe);
+        }
+
+        private (bool, string) UploadBeatmap(string oszPath, UploadModeStruct uploadingMode)
         {
             Console.WriteLine(oszPath);
             Console.WriteLine(uploadingMode);
-            return false;
+            switch (uploadingMode.Value)
+            {
+                case UploadMode.SHAREX:
+                    return this.UploadWithShareX(oszPath);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private void exportFolderBrowseButton_Click(object sender, EventArgs e)
@@ -185,7 +244,7 @@ namespace osu_trainer.Forms
             string oszPath = ExportBeatmap(exportPath, selectedMode, this.editor.RawBeatmap);
             if (uploading)
             {
-                bool success = UploadBeatmap(oszPath, uploadingMode);
+                (bool success, string urloutput) = UploadBeatmap(oszPath, uploadingMode);
                 if (success)
                 {
                     if (File.Exists(oszPath))
