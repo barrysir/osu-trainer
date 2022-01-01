@@ -39,7 +39,28 @@ namespace osu_trainer.Forms
             public ExportMode Value { get => value; set => this.value = value; }
         }
 
+        enum UploadMode
+        {
+            SHAREX
+        }
+
+        struct UploadModeStruct
+        {
+            string display;
+            UploadMode value;
+
+            public UploadModeStruct(string display, UploadMode val)
+            {
+                this.display = display;
+                this.value = val;
+            }
+
+            public string Display { get => display; set => display = value; }
+            public UploadMode Value { get => value; set => this.value = value; }
+        }
+
         private List<ExportModeStruct> exportModeList;
+        private List<UploadModeStruct> uploadModeList;
         private BeatmapEditor editor;
         private OsuButtonActivator exportBeatmapButtonActivator;
         private OsuButtonActivator uploadBeatmapButtonActivator;
@@ -64,12 +85,20 @@ namespace osu_trainer.Forms
             };
             var bindingSource1 = new BindingSource();
             bindingSource1.DataSource = exportModeList;
-
             exportMode.DisplayMember = "Display";
             exportMode.ValueMember = "Value";
             exportMode.DataSource = bindingSource1.DataSource;
-
             exportMode.SelectedIndex = 0;
+
+            uploadModeList = new List<UploadModeStruct> {
+                new UploadModeStruct("ShareX", UploadMode.SHAREX)
+            };
+            var bindingSource2 = new BindingSource();
+            bindingSource2.DataSource = uploadModeList;
+            uploadMode.DisplayMember = "Display";
+            uploadMode.ValueMember = "Value";
+            uploadMode.DataSource = bindingSource2.DataSource;
+            uploadMode.SelectedIndex = 0;
         }
 
         public static string DefaultExportFolder() => Path.GetFullPath("."); // Path.GetFullPath(Path.Combine(Properties.Settings.Default.SongsFolder, "../Exports"));
@@ -107,6 +136,12 @@ namespace osu_trainer.Forms
                     throw new ArgumentOutOfRangeException();
             }
         }
+        private bool UploadBeatmap(string oszPath, UploadModeStruct uploadingMode)
+        {
+            Console.WriteLine(oszPath);
+            Console.WriteLine(uploadingMode);
+            return false;
+        }
 
         private void exportFolderBrowseButton_Click(object sender, EventArgs e)
         {
@@ -120,17 +155,23 @@ namespace osu_trainer.Forms
 
         private void exportBeatmapButton_Click(object sender, EventArgs e)
         {
-            exportOrUploadWorker.RunWorkerAsync();
+            exportOrUploadWorker.RunWorkerAsync(false);
+        }
+        private void uploadBeatmapButton_Click(object sender, EventArgs e)
+        {
+            exportOrUploadWorker.RunWorkerAsync(true);
         }
 
         private void exportOrUploadWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            (ExportModeStruct selectedMode, string exportPath) =
-               ((ExportModeStruct, string)) this.Invoke(new Func<(ExportModeStruct, string)>(() =>
+            bool uploading = (bool) e.Argument;
+            (ExportModeStruct selectedMode, string exportPath, UploadModeStruct uploadingMode) =
+               ((ExportModeStruct, string, UploadModeStruct)) this.Invoke(new Func<(ExportModeStruct, string, UploadModeStruct)>(() =>
                 {
                     selectedMode = exportModeList[exportMode.SelectedIndex];
                     exportPath = exportFolderTextBox.Text;
-                    return (selectedMode, exportPath);
+                    uploadingMode = uploadModeList[uploadMode.SelectedIndex];
+                    return (selectedMode, exportPath, uploadingMode);
                 }))
             ;
 
@@ -141,7 +182,16 @@ namespace osu_trainer.Forms
 
             // rewrite this as ReportProgress()?
             this.Invoke(new Action(() => SetWorkingButtons(false)));
-            ExportBeatmap(exportPath, selectedMode, this.editor.RawBeatmap);
+            string oszPath = ExportBeatmap(exportPath, selectedMode, this.editor.RawBeatmap);
+            if (uploading)
+            {
+                bool success = UploadBeatmap(oszPath, uploadingMode);
+                if (success)
+                {
+                    if (File.Exists(oszPath))
+                        File.Delete(oszPath);
+                }
+            }
             this.Invoke(new Action(() => SetWorkingButtons(true)));
         }
     }
