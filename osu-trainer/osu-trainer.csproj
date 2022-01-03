@@ -157,6 +157,9 @@
     <Compile Include="Controls\ScrollableTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\SelectableLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\SongDisplay.cs">
       <SubType>Component</SubType>
     </Compile>

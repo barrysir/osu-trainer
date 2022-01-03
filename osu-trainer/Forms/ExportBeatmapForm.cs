@@ -100,6 +100,8 @@ namespace osu_trainer.Forms
             uploadMode.ValueMember = "Value";
             uploadMode.DataSource = bindingSource2.DataSource;
             uploadMode.SelectedIndex = 0;
+
+            displayText.Text = "";
         }
 
         public static string DefaultExportFolder() => Path.GetFullPath("."); // Path.GetFullPath(Path.Combine(Properties.Settings.Default.SongsFolder, "../Exports"));
@@ -240,7 +242,11 @@ namespace osu_trainer.Forms
             //Console.WriteLine(this.editor.OriginalBeatmap.Filename);
 
             // rewrite this as ReportProgress()?
-            this.Invoke(new Action(() => SetWorkingButtons(false)));
+            this.Invoke(new Action(() => {
+                SetWorkingButtons(false);
+                this.displayText.Text = "";
+            }));
+            string textToDisplay = "";
             string oszPath = ExportBeatmap(exportPath, selectedMode, this.editor.RawBeatmap);
             if (uploading)
             {
@@ -250,8 +256,15 @@ namespace osu_trainer.Forms
                     if (File.Exists(oszPath))
                         File.Delete(oszPath);
                 }
+                textToDisplay = urloutput;
+            } else
+            {
+                textToDisplay = oszPath;
             }
-            this.Invoke(new Action(() => SetWorkingButtons(true)));
+            this.Invoke(new Action(() => {
+                SetWorkingButtons(true);
+                this.displayText.Text = textToDisplay;
+            }));
         }
     }
 

@@ -60,6 +60,8 @@ namespace osu_trainer.Forms
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.uploadMode = new System.Windows.Forms.ComboBox();
             this.uploadModeLabel = new System.Windows.Forms.Label();
+            this.textPanel = new System.Windows.Forms.Panel();
+            this.displayText = new osu_trainer.Controls.SelectableLabel();
             this.exportSettings.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -68,6 +70,7 @@ namespace osu_trainer.Forms
             this.tableLayoutPanel1.SuspendLayout();
             this.uploadSettings.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
+            this.textPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // minimizeButton
@@ -214,7 +217,8 @@ namespace osu_trainer.Forms
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(435, 35);
             this.tableLayoutPanel1.TabIndex = 17;
             // 
@@ -312,11 +316,37 @@ namespace osu_trainer.Forms
             this.uploadModeLabel.Text = "Upload Method";
             this.uploadModeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // textPanel
+            // 
+            this.textPanel.Controls.Add(this.displayText);
+            this.textPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.textPanel.Location = new System.Drawing.Point(0, 187);
+            this.textPanel.Name = "textPanel";
+            this.textPanel.Size = new System.Drawing.Size(435, 15);
+            this.textPanel.TabIndex = 2;
+            // 
+            // displayText
+            // 
+            this.displayText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(35)))), ((int)(((byte)(53)))));
+            this.displayText.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.displayText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.displayText.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.displayText.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.displayText.Location = new System.Drawing.Point(0, 0);
+            this.displayText.Name = "displayText";
+            this.displayText.ReadOnly = true;
+            this.displayText.Size = new System.Drawing.Size(435, 15);
+            this.displayText.TabIndex = 2;
+            this.displayText.TabStop = false;
+            this.displayText.Text = "aaaaaaaaaaa";
+            this.displayText.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // ExportBeatmapForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(435, 237);
+            this.Controls.Add(this.textPanel);
             this.Controls.Add(this.exportButtonPanel);
             this.Controls.Add(this.uploadSettings);
             this.Controls.Add(this.exportSettings);
@@ -327,6 +357,7 @@ namespace osu_trainer.Forms
             this.Controls.SetChildIndex(this.exportSettings, 0);
             this.Controls.SetChildIndex(this.uploadSettings, 0);
             this.Controls.SetChildIndex(this.exportButtonPanel, 0);
+            this.Controls.SetChildIndex(this.textPanel, 0);
             this.exportSettings.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
@@ -339,6 +370,8 @@ namespace osu_trainer.Forms
             this.uploadSettings.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
+            this.textPanel.ResumeLayout(false);
+            this.textPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -365,5 +398,7 @@ namespace osu_trainer.Forms
         private TableLayoutPanel tableLayoutPanel4;
         private ComboBox uploadMode;
         private Label uploadModeLabel;
+        private Panel textPanel;
+        private Controls.SelectableLabel displayText;
     }
 }
