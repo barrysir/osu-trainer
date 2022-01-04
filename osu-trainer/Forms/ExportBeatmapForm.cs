@@ -60,6 +60,25 @@ namespace osu_trainer.Forms
             public UploadMode Value { get => value; set => this.value = value; }
         }
 
+        // Specialized exception class just 
+        // instead of the generic one
+        public class ExceptionToDisplayMessage : Exception
+        {
+            public ExceptionToDisplayMessage()
+            {
+            }
+
+            public ExceptionToDisplayMessage(string message)
+                : base(message)
+            {
+            }
+
+            public ExceptionToDisplayMessage(string message, Exception inner)
+                : base(message, inner)
+            {
+            }
+        }
+
         private List<ExportModeStruct> exportModeList;
         private List<UploadModeStruct> uploadModeList;
         private BeatmapEditor editor;
@@ -124,7 +143,6 @@ namespace osu_trainer.Forms
                 return this.editor.makeOszOfBeatmap(exportPath, beatmap, withBg, withMp3);
             };
 
-            // rewrite this as ReportProgress()?
             switch (selectedMode.Value)
             {
                 case ExportMode.FULL:
@@ -163,7 +181,14 @@ namespace osu_trainer.Forms
             };
 
             string prevClipboard = getClipboard();
-            sharex.Start();
+            try
+            {
+                sharex.Start();
+            } catch (Win32Exception e) when (e.NativeErrorCode == 0x00000002) // display specialized error message when sharex couldn't be found
+            {
+                throw new Exception("ShareX executable couldn't be found -- please check your system PATH or provided custom path", e);
+            }
+
             // can't do this, because if sharex wasn't already running then this waits forever
             //sharex.WaitForExit();
 
@@ -176,16 +201,59 @@ namespace osu_trainer.Forms
 
             // maybe pause for a bit to let sharex start processing?
             //System.Threading.Thread.Sleep(1000);
+
+            // todo: make these into global settings
+            const int UNLOCKED_TICKS = 10;      
+            const int TICK_INTERVAL = 500;
+            const bool SKIP_UPLOAD_DETECTION = false;
+
+            if (SKIP_UPLOAD_DETECTION)
+            {
+                return (false, "");
+            }
+
+            // number of ticks
+            int fileUnlockedFor = 0;
+            // when 0, the clipboard data was changed (sharex put an upload URL on the clipboard)
+            int stateClipboard = 1;
+            // when 0, the file went from locked to unlocked (sharex finished uploading or gave up)
+            int stateFileUsed = 2;
+
             string urlFromClipboardMaybe = prevClipboard;
             FileInfo myFileInfo = new FileInfo(path);
             while (true)
             {
                 urlFromClipboardMaybe = getClipboard();
-                if (!JunUtils.IsFileLocked(myFileInfo) && urlFromClipboardMaybe != prevClipboard)
+                bool isLocked = JunUtils.IsFileLocked(myFileInfo);
+
+                // ugly state updating code
+                if (stateClipboard == 1 && urlFromClipboardMaybe != prevClipboard)
+                    stateClipboard = 0;
+
+                if (stateFileUsed == 2 && isLocked)
+                    stateFileUsed = 1;
+                else if (stateFileUsed == 1 && !isLocked)
+                    stateFileUsed = 0;
+
+                if (isLocked) {
+                    fileUnlockedFor = 0;
+                } else {
+                    fileUnlockedFor += 1;
+                }
+
+                // figure out what to do based on state
+                if (stateClipboard == 0 && stateFileUsed == 0)
                 {
+                    // success
                     break;
                 }
-                System.Threading.Thread.Sleep(500);
+
+                // if file hasn't been used for a while, something probably went wrong: exit out of the detection
+                if (fileUnlockedFor >= UNLOCKED_TICKS)
+                {
+                    throw new ExceptionToDisplayMessage("File detected as not in use for too long, ShareX probably stuck. Stopping upload detection");
+                }
+                System.Threading.Thread.Sleep(TICK_INTERVAL);
             }
             Console.WriteLine(urlFromClipboardMaybe);
             return (true, urlFromClipboardMaybe);
@@ -241,30 +309,66 @@ namespace osu_trainer.Forms
             //Console.WriteLine(this.editor.NewBeatmap.Filename);
             //Console.WriteLine(this.editor.OriginalBeatmap.Filename);
 
-            // rewrite this as ReportProgress()?
-            this.Invoke(new Action(() => {
-                SetWorkingButtons(false);
-                this.displayText.Text = "";
-            }));
-            string textToDisplay = "";
-            string oszPath = ExportBeatmap(exportPath, selectedMode, this.editor.RawBeatmap);
-            if (uploading)
+            using (var buttonGuard = new JunUtils.RAIIGuard(
+                () => this.Invoke(new Action(() => {
+                    SetWorkingButtons(false);
+                    this.displayText.Text = "";
+                })),
+                () => this.Invoke(new Action(() => {
+                    SetWorkingButtons(true);
+                }))
+            ))
             {
-                (bool success, string urloutput) = UploadBeatmap(oszPath, uploadingMode);
-                if (success)
+                string textToDisplay = "";
+                string oszPath = ExportBeatmap(exportPath, selectedMode, this.editor.RawBeatmap);
+                if (uploading)
                 {
-                    if (File.Exists(oszPath))
-                        File.Delete(oszPath);
+                    (bool goodToDelete, string urloutput) = UploadBeatmap(oszPath, uploadingMode);
+                    if (goodToDelete)
+                    {
+                        if (File.Exists(oszPath))
+                            File.Delete(oszPath);
+                    }
+                    textToDisplay = urloutput;
                 }
-                textToDisplay = urloutput;
-            } else
-            {
-                textToDisplay = oszPath;
+                else
+                {
+                    textToDisplay = oszPath;
+                }
+                this.Invoke(new Action(() =>
+                {
+                    this.displayText.Text = textToDisplay;
+                }));
             }
-            this.Invoke(new Action(() => {
-                SetWorkingButtons(true);
-                this.displayText.Text = textToDisplay;
-            }));
+        }
+
+        private void exportOrUploadWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                if (e.Error.GetType() == typeof(ExceptionToDisplayMessage))
+                {
+                    MessageBox.Show(
+                        $"{e.Error.Message}",
+                        "Export Failed",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                } 
+                else
+                {
+                    MessageBox.Show(
+                        $"Export failed because of the following error:\n{e.Error.ToString()}",
+                        "Export Failed",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+            }
+            else
+            {
+                //GenerateMapButton.Progress = 0f;
+            }
         }
     }
 

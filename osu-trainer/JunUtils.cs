@@ -133,5 +133,32 @@ namespace osu_trainer
             //file is not locked
             return false;
         }
+
+        // https://www.codeproject.com/Articles/122129/RAII-Resource-Acquisition-Is-Initialization-C-Help
+        // used for symmetric actions like login, logout
+        public sealed class RAIIGuard : IDisposable
+        {
+            private Action Cleanup { get; set; }
+            public RAIIGuard(Action init, Action cleanup)
+            {
+                Cleanup = cleanup;
+                if (init != null) init();
+            }
+            void IDisposable.Dispose() { if (Cleanup != null) Cleanup(); }
+        }
+        // used for symmetric actions that must pass
+        // over an object from init to cleanup and that
+        // need to provide the item to the "using" body
+        public sealed class RAIIGuard<T> : IDisposable
+        {
+            private Action<T> Cleanup { get; set; }
+            public T Item { get; private set; }
+            public RAIIGuard(Func<T> init, Action<T> cleanup)
+            {
+                Cleanup = cleanup;
+                Item = (init != null) ? init() : default(T);
+            }
+            void IDisposable.Dispose() { if (Cleanup != null) Cleanup(Item); }
+        }
     }
 }

@@ -268,6 +268,7 @@ namespace osu_trainer.Forms
             // exportOrUploadWorker
             // 
             this.exportOrUploadWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.exportOrUploadWorker_DoWork);
+            this.exportOrUploadWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.exportOrUploadWorker_RunWorkerCompleted);
             // 
             // uploadSettings
             // 
