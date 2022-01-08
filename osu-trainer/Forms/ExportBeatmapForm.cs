@@ -95,8 +95,6 @@ namespace osu_trainer.Forms
 
         private void ExportBeatmapForm_Load(object sender, EventArgs e)
         {
-            exportFolderTextBox.Text = DefaultExportFolder();
-
             exportModeList = new List<ExportModeStruct> {
                 new ExportModeStruct("Full", ExportMode.FULL),
                 new ExportModeStruct(".osu + mp3 + bg", ExportMode.OSU_MP3_BG),
@@ -121,6 +119,49 @@ namespace osu_trainer.Forms
             uploadMode.SelectedIndex = 0;
 
             displayText.Text = "";
+
+            LoadSettings();
+        }
+        
+        // conv argument is a hack because i don't understand C# generics with enums
+        private int saveenum<T>(List<T> list, int index, Func<T, int> conv)
+        {
+            return conv(list[index]);
+        }
+
+        private int loadenum<T>(List<T> list, int val, Func<T, int> conv)
+        {
+            int index = list.FindIndex(i => conv(i) == val);
+            if (index == -1)
+                index = 0;
+            return index;
+        }
+
+        private void LoadSettings()
+        {
+            exportMode.SelectedIndex = loadenum(exportModeList, Properties.ExportBeatmap.Default.ExportMode, i => (int)i.Value);
+            uploadMode.SelectedIndex = loadenum(uploadModeList, Properties.ExportBeatmap.Default.UploadMode, i => (int)i.Value);
+
+            string exportFolder = Properties.ExportBeatmap.Default.ExportFolderPath;
+            if (exportFolder == null || exportFolder == "")
+            {
+                exportFolder = DefaultExportFolder();
+            }
+            exportFolderTextBox.Text = exportFolder;
+        }
+
+        private void SaveSettings()
+        {
+            Func<string, string, bool> PathsEqual = (path1, path2) => string.Equals(Path.GetFullPath(path1), Path.GetFullPath(path2), StringComparison.OrdinalIgnoreCase);
+            Properties.ExportBeatmap.Default.ExportMode = saveenum(exportModeList, exportMode.SelectedIndex, i => (int)i.Value);
+            Properties.ExportBeatmap.Default.UploadMode = saveenum(uploadModeList, uploadMode.SelectedIndex, i => (int)i.Value);
+            string exportText = exportFolderTextBox.Text;
+            if (PathsEqual(exportText, DefaultExportFolder()))
+            {
+                exportText = "";
+            }
+            Properties.ExportBeatmap.Default.ExportFolderPath = exportText;
+            Properties.ExportBeatmap.Default.Save();
         }
 
         public static string DefaultExportFolder() => Path.GetFullPath("."); // Path.GetFullPath(Path.Combine(Properties.Settings.Default.SongsFolder, "../Exports"));
@@ -202,10 +243,9 @@ namespace osu_trainer.Forms
             // maybe pause for a bit to let sharex start processing?
             //System.Threading.Thread.Sleep(1000);
 
-            // todo: make these into global settings
-            const int UNLOCKED_TICKS = 10;      
-            const int TICK_INTERVAL = 500;
-            const bool SKIP_UPLOAD_DETECTION = false;
+            int UNLOCKED_TICKS = Properties.ExportBeatmap.Default.SharexBailoutTicks;
+            int TICK_INTERVAL = Properties.ExportBeatmap.Default.SharexTickInterval;
+            bool SKIP_UPLOAD_DETECTION = Properties.ExportBeatmap.Default.SharexSkipUploadDetection;
 
             if (SKIP_UPLOAD_DETECTION)
             {
@@ -369,6 +409,11 @@ namespace osu_trainer.Forms
             {
                 //GenerateMapButton.Progress = 0f;
             }
+        }
+
+        private void ExportBeatmapForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
         }
     }
 

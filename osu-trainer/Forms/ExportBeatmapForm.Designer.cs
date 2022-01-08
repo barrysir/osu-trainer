@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -354,6 +354,7 @@ namespace osu_trainer.Forms
             this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "ExportBeatmapForm";
             this.Text = "Export Beatmap";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportBeatmapForm_FormClosing);
             this.Load += new System.EventHandler(this.ExportBeatmapForm_Load);
             this.Controls.SetChildIndex(this.exportSettings, 0);
             this.Controls.SetChildIndex(this.uploadSettings, 0);
