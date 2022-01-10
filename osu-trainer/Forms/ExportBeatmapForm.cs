@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -121,6 +121,31 @@ namespace osu_trainer.Forms
             displayText.Text = "";
 
             LoadSettings();
+            showUploadSettingsFor(((UploadModeStruct)uploadMode.SelectedItem).Value);
+        }
+
+        private void showUploadSettingsFor(UploadMode mode)
+        {
+            Control controlToShow;
+            switch (mode)
+            {
+                case UploadMode.SHAREX:
+                    controlToShow = sharexSettings;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            // hide all previous
+            foreach(Control control in uploadAdditionalSettings.Controls)
+            {
+                control.Visible = false;
+            }
+            controlToShow.Visible = true;
+            var oldHeight = uploadAdditionalSettings.Height;
+            uploadAdditionalSettings.Height = controlToShow.Height;
+            var newHeight = uploadAdditionalSettings.Height;
+            this.Height += (-oldHeight) + newHeight;
         }
         
         // conv argument is a hack because i don't understand C# generics with enums
@@ -414,6 +439,11 @@ namespace osu_trainer.Forms
         private void ExportBeatmapForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
+        }
+        private void uploadMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox comboBox = (ComboBox)sender;
+            showUploadSettingsFor(((UploadModeStruct)comboBox.SelectedItem).Value);
         }
     }
 
