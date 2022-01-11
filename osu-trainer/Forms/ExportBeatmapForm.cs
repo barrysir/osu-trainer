@@ -79,11 +79,34 @@ namespace osu_trainer.Forms
             }
         }
 
+        struct SettingVars
+        {
+            public ExportMode exportMode;
+            public UploadMode uploadMode;
+            public string exportFolderPath;
+            public int sharexTickInterval;
+            public bool sharexSkipUploadDetection;
+            public int sharexBailoutTicks;
+
+            private bool isNullString(string s) => (s == null) || (s == "");
+
+            public string fullExportPath
+            {
+                get
+                {
+                    return (isNullString(exportFolderPath)) ? DefaultExportFolder() : exportFolderPath;
+                }
+            }
+        }
+
+        public static string DefaultExportFolder() => Path.GetFullPath("."); // Path.GetFullPath(Path.Combine(Properties.Settings.Default.SongsFolder, "../Exports"));
+
         private List<ExportModeStruct> exportModeList;
         private List<UploadModeStruct> uploadModeList;
         private BeatmapEditor editor;
         private OsuButtonActivator exportBeatmapButtonActivator;
         private OsuButtonActivator uploadBeatmapButtonActivator;
+        private SettingVars settings;
 
         public ExportBeatmapForm(BeatmapEditor edit)
         {
@@ -120,7 +143,8 @@ namespace osu_trainer.Forms
 
             displayText.Text = "";
 
-            LoadSettings();
+            LoadPropertiesIntoSettings();
+            LoadSettingsIntoUI();
             showUploadSettingsFor(((UploadModeStruct)uploadMode.SelectedItem).Value);
         }
 
@@ -147,49 +171,64 @@ namespace osu_trainer.Forms
             var newHeight = uploadAdditionalSettings.Height;
             this.Height += (-oldHeight) + newHeight;
         }
-        
+
         // conv argument is a hack because i don't understand C# generics with enums
-        private int saveenum<T>(List<T> list, int index, Func<T, int> conv)
+        private U saveenum<T,U>(List<T> list, int index, Func<T, U> conv)
         {
             return conv(list[index]);
         }
 
-        private int loadenum<T>(List<T> list, int val, Func<T, int> conv)
+        private int loadenum<T,U>(List<T> list, U val, Func<T, U> conv)
         {
-            int index = list.FindIndex(i => conv(i) == val);
+            int index = list.FindIndex(i => EqualityComparer<U>.Default.Equals(conv(i), val));
             if (index == -1)
                 index = 0;
             return index;
         }
 
-        private void LoadSettings()
+        private void LoadPropertiesIntoSettings()
         {
-            exportMode.SelectedIndex = loadenum(exportModeList, Properties.ExportBeatmap.Default.ExportMode, i => (int)i.Value);
-            uploadMode.SelectedIndex = loadenum(uploadModeList, Properties.ExportBeatmap.Default.UploadMode, i => (int)i.Value);
-
-            string exportFolder = Properties.ExportBeatmap.Default.ExportFolderPath;
-            if (exportFolder == null || exportFolder == "")
-            {
-                exportFolder = DefaultExportFolder();
-            }
-            exportFolderTextBox.Text = exportFolder;
+            var newsettings = new SettingVars();
+            newsettings.exportMode = (ExportMode) Properties.ExportBeatmap.Default.ExportMode;
+            newsettings.uploadMode = (UploadMode) Properties.ExportBeatmap.Default.UploadMode;
+            newsettings.exportFolderPath = Properties.ExportBeatmap.Default.ExportFolderPath;
+            newsettings.sharexBailoutTicks = Properties.ExportBeatmap.Default.SharexBailoutTicks;
+            newsettings.sharexSkipUploadDetection = Properties.ExportBeatmap.Default.SharexSkipUploadDetection;
+            newsettings.sharexTickInterval = Properties.ExportBeatmap.Default.SharexTickInterval;
+            this.settings = newsettings;
         }
 
-        private void SaveSettings()
+        private void WritePropertiesFromSettings()
+        {
+            Properties.ExportBeatmap.Default.ExportMode = (int)settings.exportMode;
+            Properties.ExportBeatmap.Default.UploadMode = (int)settings.uploadMode;
+            Properties.ExportBeatmap.Default.ExportFolderPath = settings.exportFolderPath;
+            Properties.ExportBeatmap.Default.SharexBailoutTicks = settings.sharexBailoutTicks;
+            Properties.ExportBeatmap.Default.SharexSkipUploadDetection = settings.sharexSkipUploadDetection;
+            Properties.ExportBeatmap.Default.SharexTickInterval = settings.sharexTickInterval;
+            Properties.ExportBeatmap.Default.Save();
+        }
+
+        private void LoadSettingsIntoUI()
+        {
+            exportMode.SelectedIndex = loadenum(exportModeList, settings.exportMode, i => i.Value);
+            uploadMode.SelectedIndex = loadenum(uploadModeList, settings.uploadMode, i => i.Value);
+
+            exportFolderTextBox.Text = settings.fullExportPath;
+        }
+
+        private void WriteSettingsFromUI()
         {
             Func<string, string, bool> PathsEqual = (path1, path2) => string.Equals(Path.GetFullPath(path1), Path.GetFullPath(path2), StringComparison.OrdinalIgnoreCase);
-            Properties.ExportBeatmap.Default.ExportMode = saveenum(exportModeList, exportMode.SelectedIndex, i => (int)i.Value);
-            Properties.ExportBeatmap.Default.UploadMode = saveenum(uploadModeList, uploadMode.SelectedIndex, i => (int)i.Value);
+            settings.exportMode = saveenum(exportModeList, exportMode.SelectedIndex, i => i.Value);
+            settings.uploadMode = saveenum(uploadModeList, uploadMode.SelectedIndex, i => i.Value);
             string exportText = exportFolderTextBox.Text;
             if (PathsEqual(exportText, DefaultExportFolder()))
             {
                 exportText = "";
             }
-            Properties.ExportBeatmap.Default.ExportFolderPath = exportText;
-            Properties.ExportBeatmap.Default.Save();
+            settings.exportFolderPath = exportText;
         }
-
-        public static string DefaultExportFolder() => Path.GetFullPath("."); // Path.GetFullPath(Path.Combine(Properties.Settings.Default.SongsFolder, "../Exports"));
 
         // todo: name this
         private void SetWorkingButtons(bool state)
@@ -198,7 +237,7 @@ namespace osu_trainer.Forms
             this.uploadBeatmapButtonActivator.setActivated(state);
         }
 
-        private string ExportBeatmap(string exportPath, ExportModeStruct selectedMode, Beatmap beatmap)
+        private string ExportBeatmap(string exportPath, ExportMode selectedMode, Beatmap beatmap)
         {
             Func<string> makeFull = () => {
                 string songsFolder = Path.GetDirectoryName(beatmap.Filename);
@@ -209,7 +248,7 @@ namespace osu_trainer.Forms
                 return this.editor.makeOszOfBeatmap(exportPath, beatmap, withBg, withMp3);
             };
 
-            switch (selectedMode.Value)
+            switch (selectedMode)
             {
                 case ExportMode.FULL:
                     return makeFull();
@@ -268,9 +307,9 @@ namespace osu_trainer.Forms
             // maybe pause for a bit to let sharex start processing?
             //System.Threading.Thread.Sleep(1000);
 
-            int UNLOCKED_TICKS = Properties.ExportBeatmap.Default.SharexBailoutTicks;
-            int TICK_INTERVAL = Properties.ExportBeatmap.Default.SharexTickInterval;
-            bool SKIP_UPLOAD_DETECTION = Properties.ExportBeatmap.Default.SharexSkipUploadDetection;
+            int UNLOCKED_TICKS = settings.sharexBailoutTicks;
+            int TICK_INTERVAL = settings.sharexTickInterval;
+            bool SKIP_UPLOAD_DETECTION = settings.sharexSkipUploadDetection;
 
             if (SKIP_UPLOAD_DETECTION)
             {
@@ -324,11 +363,11 @@ namespace osu_trainer.Forms
             return (true, urlFromClipboardMaybe);
         }
 
-        private (bool, string) UploadBeatmap(string oszPath, UploadModeStruct uploadingMode)
+        private (bool, string) UploadBeatmap(string oszPath, UploadMode uploadingMode)
         {
             Console.WriteLine(oszPath);
             Console.WriteLine(uploadingMode);
-            switch (uploadingMode.Value)
+            switch (uploadingMode)
             {
                 case UploadMode.SHAREX:
                     return this.UploadWithShareX(oszPath);
@@ -359,15 +398,12 @@ namespace osu_trainer.Forms
         private void exportOrUploadWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             bool uploading = (bool) e.Argument;
-            (ExportModeStruct selectedMode, string exportPath, UploadModeStruct uploadingMode) =
-               ((ExportModeStruct, string, UploadModeStruct)) this.Invoke(new Func<(ExportModeStruct, string, UploadModeStruct)>(() =>
-                {
-                    selectedMode = exportModeList[exportMode.SelectedIndex];
-                    exportPath = exportFolderTextBox.Text;
-                    uploadingMode = uploadModeList[uploadMode.SelectedIndex];
-                    return (selectedMode, exportPath, uploadingMode);
-                }))
-            ;
+
+            // update setting variables with current UI values
+            this.Invoke(new Action(() => WriteSettingsFromUI()));
+            var selectedMode = settings.exportMode;
+            string exportPath = settings.fullExportPath;
+            var uploadingMode = settings.uploadMode;
 
             //Console.WriteLine(selected.Value);
             //Console.WriteLine(path);
@@ -438,7 +474,8 @@ namespace osu_trainer.Forms
 
         private void ExportBeatmapForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveSettings();
+            WriteSettingsFromUI();
+            WritePropertiesFromSettings();
         }
         private void uploadMode_SelectedIndexChanged(object sender, EventArgs e)
         {
