@@ -414,6 +414,7 @@ namespace osu_trainer.Forms
             this.sharexPathBrowseButton.TabIndex = 14;
             this.sharexPathBrowseButton.Text = "Browse";
             this.sharexPathBrowseButton.UseVisualStyleBackColor = true;
+            this.sharexPathBrowseButton.Click += new System.EventHandler(this.sharexPathBrowseButton_Click);
             // 
             // sharexPathLabel
             // 

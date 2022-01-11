@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -84,6 +84,7 @@ namespace osu_trainer.Forms
             public ExportMode exportMode;
             public UploadMode uploadMode;
             public string exportFolderPath;
+            public string sharexPath;
             public int sharexTickInterval;
             public bool sharexSkipUploadDetection;
             public int sharexBailoutTicks;
@@ -95,6 +96,14 @@ namespace osu_trainer.Forms
                 get
                 {
                     return (isNullString(exportFolderPath)) ? DefaultExportFolder() : exportFolderPath;
+                }
+            }
+
+            public string fullSharexPath
+            {
+                get
+                {
+                    return (isNullString(sharexPath)) ? "sharex.exe" : sharexPath;
                 }
             }
         }
@@ -192,6 +201,7 @@ namespace osu_trainer.Forms
             newsettings.exportMode = (ExportMode) Properties.ExportBeatmap.Default.ExportMode;
             newsettings.uploadMode = (UploadMode) Properties.ExportBeatmap.Default.UploadMode;
             newsettings.exportFolderPath = Properties.ExportBeatmap.Default.ExportFolderPath;
+            newsettings.sharexPath = Properties.ExportBeatmap.Default.SharexPath;
             newsettings.sharexBailoutTicks = Properties.ExportBeatmap.Default.SharexBailoutTicks;
             newsettings.sharexSkipUploadDetection = Properties.ExportBeatmap.Default.SharexSkipUploadDetection;
             newsettings.sharexTickInterval = Properties.ExportBeatmap.Default.SharexTickInterval;
@@ -203,6 +213,7 @@ namespace osu_trainer.Forms
             Properties.ExportBeatmap.Default.ExportMode = (int)settings.exportMode;
             Properties.ExportBeatmap.Default.UploadMode = (int)settings.uploadMode;
             Properties.ExportBeatmap.Default.ExportFolderPath = settings.exportFolderPath;
+            Properties.ExportBeatmap.Default.SharexPath = settings.sharexPath;
             Properties.ExportBeatmap.Default.SharexBailoutTicks = settings.sharexBailoutTicks;
             Properties.ExportBeatmap.Default.SharexSkipUploadDetection = settings.sharexSkipUploadDetection;
             Properties.ExportBeatmap.Default.SharexTickInterval = settings.sharexTickInterval;
@@ -215,6 +226,7 @@ namespace osu_trainer.Forms
             uploadMode.SelectedIndex = loadenum(uploadModeList, settings.uploadMode, i => i.Value);
 
             exportFolderTextBox.Text = settings.fullExportPath;
+            sharexPathTextBox.Text = settings.sharexPath;
         }
 
         private void WriteSettingsFromUI()
@@ -228,6 +240,7 @@ namespace osu_trainer.Forms
                 exportText = "";
             }
             settings.exportFolderPath = exportText;
+            settings.sharexPath = sharexPathTextBox.Text;
         }
 
         // todo: name this
@@ -269,7 +282,7 @@ namespace osu_trainer.Forms
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "sharex.exe",
+                    FileName = settings.fullSharexPath,
                     Arguments = $"\"{path}\"",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
@@ -291,7 +304,7 @@ namespace osu_trainer.Forms
                 sharex.Start();
             } catch (Win32Exception e) when (e.NativeErrorCode == 0x00000002) // display specialized error message when sharex couldn't be found
             {
-                throw new Exception("ShareX executable couldn't be found -- please check your system PATH or provided custom path", e);
+                throw new Exception($"ShareX executable ({settings.sharexPath}) couldn't be found -- please check your system PATH or provided custom path", e);
             }
 
             // can't do this, because if sharex wasn't already running then this waits forever
@@ -477,6 +490,16 @@ namespace osu_trainer.Forms
             WriteSettingsFromUI();
             WritePropertiesFromSettings();
         }
+
+        private void sharexPathBrowseButton_Click(object sender, EventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                sharexPathTextBox.Text = dialog.FileName;
+            }
+        }
+
         private void uploadMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;

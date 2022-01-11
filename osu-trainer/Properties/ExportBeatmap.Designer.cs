@@ -94,5 +94,17 @@ namespace osu_trainer.Properties {
                 this["SharexBailoutTicks"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SharexPath {
+            get {
+                return ((string)(this["SharexPath"]));
+            }
+            set {
+                this["SharexPath"] = value;
+            }
+        }
     }
 }
