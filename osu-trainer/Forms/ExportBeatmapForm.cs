@@ -88,6 +88,7 @@ namespace osu_trainer.Forms
             public int sharexTickInterval;
             public bool sharexSkipUploadDetection;
             public int sharexBailoutTicks;
+            public string sharexArguments;
 
             private bool isNullString(string s) => (s == null) || (s == "");
 
@@ -205,6 +206,7 @@ namespace osu_trainer.Forms
             newsettings.sharexBailoutTicks = Properties.ExportBeatmap.Default.SharexBailoutTicks;
             newsettings.sharexSkipUploadDetection = Properties.ExportBeatmap.Default.SharexSkipUploadDetection;
             newsettings.sharexTickInterval = Properties.ExportBeatmap.Default.SharexTickInterval;
+            newsettings.sharexArguments = Properties.ExportBeatmap.Default.SharexArguments;
             this.settings = newsettings;
         }
 
@@ -217,6 +219,7 @@ namespace osu_trainer.Forms
             Properties.ExportBeatmap.Default.SharexBailoutTicks = settings.sharexBailoutTicks;
             Properties.ExportBeatmap.Default.SharexSkipUploadDetection = settings.sharexSkipUploadDetection;
             Properties.ExportBeatmap.Default.SharexTickInterval = settings.sharexTickInterval;
+            Properties.ExportBeatmap.Default.SharexArguments = settings.sharexArguments;
             Properties.ExportBeatmap.Default.Save();
         }
 
@@ -283,7 +286,7 @@ namespace osu_trainer.Forms
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = settings.fullSharexPath,
-                    Arguments = $"\"{path}\"",
+                    Arguments = $"\"{path}\" {settings.sharexArguments}",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,

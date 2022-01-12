@@ -106,5 +106,17 @@ namespace osu_trainer.Properties {
                 this["SharexPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SharexArguments {
+            get {
+                return ((string)(this["SharexArguments"]));
+            }
+            set {
+                this["SharexArguments"] = value;
+            }
+        }
     }
 }
