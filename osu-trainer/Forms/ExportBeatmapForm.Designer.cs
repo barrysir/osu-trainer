@@ -64,6 +64,8 @@ namespace osu_trainer.Forms
             this.displayText = new osu_trainer.Controls.SelectableLabel();
             this.sharexSettings = new System.Windows.Forms.Panel();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+            this.sharexArgsLabel = new System.Windows.Forms.Label();
+            this.sharexArgsTextBox = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.sharexPathTextBox = new System.Windows.Forms.TextBox();
             this.sharexPathBrowseButton = new System.Windows.Forms.Button();
@@ -152,12 +154,13 @@ namespace osu_trainer.Forms
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(310, 35);
             this.tableLayoutPanel3.TabIndex = 15;
             // 
             // exportFolderTextBox
             // 
-            this.exportFolderTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.exportFolderTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.exportFolderTextBox.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.exportFolderTextBox.Location = new System.Drawing.Point(3, 5);
             this.exportFolderTextBox.Name = "exportFolderTextBox";
@@ -166,11 +169,11 @@ namespace osu_trainer.Forms
             // 
             // exportFolderBrowseButton
             // 
-            this.exportFolderBrowseButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.exportFolderBrowseButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.exportFolderBrowseButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.exportFolderBrowseButton.Location = new System.Drawing.Point(233, 6);
+            this.exportFolderBrowseButton.Location = new System.Drawing.Point(233, 5);
             this.exportFolderBrowseButton.Name = "exportFolderBrowseButton";
-            this.exportFolderBrowseButton.Size = new System.Drawing.Size(74, 23);
+            this.exportFolderBrowseButton.Size = new System.Drawing.Size(74, 25);
             this.exportFolderBrowseButton.TabIndex = 14;
             this.exportFolderBrowseButton.Text = "Browse";
             this.exportFolderBrowseButton.UseVisualStyleBackColor = true;
@@ -202,7 +205,7 @@ namespace osu_trainer.Forms
             // 
             this.exportButtonPanel.Controls.Add(this.panelForMargin);
             this.exportButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.exportButtonPanel.Location = new System.Drawing.Point(0, 230);
+            this.exportButtonPanel.Location = new System.Drawing.Point(0, 261);
             this.exportButtonPanel.Name = "exportButtonPanel";
             this.exportButtonPanel.Size = new System.Drawing.Size(435, 35);
             this.exportButtonPanel.TabIndex = 0;
@@ -333,7 +336,7 @@ namespace osu_trainer.Forms
             // 
             this.textPanel.Controls.Add(this.displayText);
             this.textPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.textPanel.Location = new System.Drawing.Point(0, 215);
+            this.textPanel.Location = new System.Drawing.Point(0, 246);
             this.textPanel.Name = "textPanel";
             this.textPanel.Size = new System.Drawing.Size(435, 15);
             this.textPanel.TabIndex = 2;
@@ -358,9 +361,9 @@ namespace osu_trainer.Forms
             // 
             this.sharexSettings.Controls.Add(this.tableLayoutPanel5);
             this.sharexSettings.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sharexSettings.Location = new System.Drawing.Point(0, 0);
+            this.sharexSettings.Location = new System.Drawing.Point(0, 1);
             this.sharexSettings.Name = "sharexSettings";
-            this.sharexSettings.Size = new System.Drawing.Size(435, 35);
+            this.sharexSettings.Size = new System.Drawing.Size(435, 74);
             this.sharexSettings.TabIndex = 19;
             // 
             // tableLayoutPanel5
@@ -368,16 +371,42 @@ namespace osu_trainer.Forms
             this.tableLayoutPanel5.ColumnCount = 2;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 125F));
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel5.Controls.Add(this.sharexArgsLabel, 0, 1);
+            this.tableLayoutPanel5.Controls.Add(this.sharexArgsTextBox, 1, 1);
             this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel6, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.sharexPathLabel, 0, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel5.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 2;
+            this.tableLayoutPanel5.RowCount = 3;
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(435, 35);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(435, 74);
             this.tableLayoutPanel5.TabIndex = 19;
+            // 
+            // sharexArgsLabel
+            // 
+            this.sharexArgsLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.sharexArgsLabel.AutoSize = true;
+            this.sharexArgsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(154)))), ((int)(((byte)(233)))));
+            this.sharexArgsLabel.Location = new System.Drawing.Point(10, 42);
+            this.sharexArgsLabel.Margin = new System.Windows.Forms.Padding(10, 0, 3, 0);
+            this.sharexArgsLabel.Name = "sharexArgsLabel";
+            this.sharexArgsLabel.Size = new System.Drawing.Size(83, 17);
+            this.sharexArgsLabel.TabIndex = 17;
+            this.sharexArgsLabel.Text = "ShareX Args";
+            this.sharexArgsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // sharexArgsTextBox
+            // 
+            this.sharexArgsTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.sharexArgsTextBox.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.sharexArgsTextBox.Location = new System.Drawing.Point(128, 38);
+            this.sharexArgsTextBox.Name = "sharexArgsTextBox";
+            this.sharexArgsTextBox.Size = new System.Drawing.Size(224, 25);
+            this.sharexArgsTextBox.TabIndex = 15;
             // 
             // tableLayoutPanel6
             // 
@@ -392,12 +421,13 @@ namespace osu_trainer.Forms
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
             this.tableLayoutPanel6.RowCount = 1;
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel6.Size = new System.Drawing.Size(310, 35);
             this.tableLayoutPanel6.TabIndex = 16;
             // 
             // sharexPathTextBox
             // 
-            this.sharexPathTextBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.sharexPathTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.sharexPathTextBox.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.sharexPathTextBox.Location = new System.Drawing.Point(3, 5);
             this.sharexPathTextBox.Name = "sharexPathTextBox";
@@ -406,11 +436,11 @@ namespace osu_trainer.Forms
             // 
             // sharexPathBrowseButton
             // 
-            this.sharexPathBrowseButton.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.sharexPathBrowseButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.sharexPathBrowseButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.sharexPathBrowseButton.Location = new System.Drawing.Point(233, 6);
+            this.sharexPathBrowseButton.Location = new System.Drawing.Point(233, 5);
             this.sharexPathBrowseButton.Name = "sharexPathBrowseButton";
-            this.sharexPathBrowseButton.Size = new System.Drawing.Size(74, 23);
+            this.sharexPathBrowseButton.Size = new System.Drawing.Size(74, 25);
             this.sharexPathBrowseButton.TabIndex = 14;
             this.sharexPathBrowseButton.Text = "Browse";
             this.sharexPathBrowseButton.UseVisualStyleBackColor = true;
@@ -435,6 +465,7 @@ namespace osu_trainer.Forms
             this.uploadAdditionalSettings.Dock = System.Windows.Forms.DockStyle.Top;
             this.uploadAdditionalSettings.Location = new System.Drawing.Point(0, 168);
             this.uploadAdditionalSettings.Name = "uploadAdditionalSettings";
+            this.uploadAdditionalSettings.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
             this.uploadAdditionalSettings.Size = new System.Drawing.Size(435, 50);
             this.uploadAdditionalSettings.TabIndex = 20;
             // 
@@ -442,7 +473,7 @@ namespace osu_trainer.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(435, 265);
+            this.ClientSize = new System.Drawing.Size(435, 296);
             this.Controls.Add(this.textPanel);
             this.Controls.Add(this.exportButtonPanel);
             this.Controls.Add(this.uploadAdditionalSettings);
@@ -513,5 +544,7 @@ namespace osu_trainer.Forms
         private Button sharexPathBrowseButton;
         private Label sharexPathLabel;
         private Panel uploadAdditionalSettings;
+        private Label sharexArgsLabel;
+        private TextBox sharexArgsTextBox;
     }
 }

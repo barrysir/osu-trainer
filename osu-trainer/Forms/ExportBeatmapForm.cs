@@ -230,6 +230,7 @@ namespace osu_trainer.Forms
 
             exportFolderTextBox.Text = settings.fullExportPath;
             sharexPathTextBox.Text = settings.sharexPath;
+            sharexArgsTextBox.Text = settings.sharexArguments;
         }
 
         private void WriteSettingsFromUI()
@@ -244,6 +245,7 @@ namespace osu_trainer.Forms
             }
             settings.exportFolderPath = exportText;
             settings.sharexPath = sharexPathTextBox.Text;
+            settings.sharexArguments = sharexArgsTextBox.Text;
         }
 
         // todo: name this
