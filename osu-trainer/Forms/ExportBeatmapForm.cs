@@ -42,7 +42,8 @@ namespace osu_trainer.Forms
 
         enum UploadMode
         {
-            SHAREX
+            SHAREX,
+            TRANSFERSH
         }
 
         struct UploadModeStruct
@@ -89,6 +90,8 @@ namespace osu_trainer.Forms
             public bool sharexSkipUploadDetection;
             public int sharexBailoutTicks;
             public string sharexArguments;
+            public int transfershMaxDownloads;
+            public int transfershMaxDays;
 
             private bool isNullString(string s) => (s == null) || (s == "");
 
@@ -117,6 +120,7 @@ namespace osu_trainer.Forms
         private OsuButtonActivator exportBeatmapButtonActivator;
         private OsuButtonActivator uploadBeatmapButtonActivator;
         private SettingVars settings;
+        private Uploaders.TransferShFactory transfersh;
 
         public ExportBeatmapForm(BeatmapEditor edit)
         {
@@ -124,6 +128,7 @@ namespace osu_trainer.Forms
             this.editor = edit;
             this.exportBeatmapButtonActivator = new OsuButtonActivator(exportBeatmapButton);
             this.uploadBeatmapButtonActivator = new OsuButtonActivator(uploadBeatmapButton);
+            this.transfersh = new Uploaders.TransferShFactory();
         }
 
         private void ExportBeatmapForm_Load(object sender, EventArgs e)
@@ -142,7 +147,8 @@ namespace osu_trainer.Forms
             exportMode.SelectedIndex = 0;
 
             uploadModeList = new List<UploadModeStruct> {
-                new UploadModeStruct("ShareX", UploadMode.SHAREX)
+                new UploadModeStruct("ShareX", UploadMode.SHAREX),
+                new UploadModeStruct("transfer.sh", UploadMode.TRANSFERSH)
             };
             var bindingSource2 = new BindingSource();
             bindingSource2.DataSource = uploadModeList;
@@ -165,6 +171,9 @@ namespace osu_trainer.Forms
             {
                 case UploadMode.SHAREX:
                     controlToShow = sharexSettings;
+                    break;
+                case UploadMode.TRANSFERSH:
+                    controlToShow = transfershSettings;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -207,6 +216,8 @@ namespace osu_trainer.Forms
             newsettings.sharexSkipUploadDetection = Properties.ExportBeatmap.Default.SharexSkipUploadDetection;
             newsettings.sharexTickInterval = Properties.ExportBeatmap.Default.SharexTickInterval;
             newsettings.sharexArguments = Properties.ExportBeatmap.Default.SharexArguments;
+            newsettings.transfershMaxDays = Properties.ExportBeatmap.Default.TransfershMaxDays;
+            newsettings.transfershMaxDownloads = Properties.ExportBeatmap.Default.TransfershMaxDownloads;
             this.settings = newsettings;
         }
 
@@ -220,6 +231,8 @@ namespace osu_trainer.Forms
             Properties.ExportBeatmap.Default.SharexSkipUploadDetection = settings.sharexSkipUploadDetection;
             Properties.ExportBeatmap.Default.SharexTickInterval = settings.sharexTickInterval;
             Properties.ExportBeatmap.Default.SharexArguments = settings.sharexArguments;
+            Properties.ExportBeatmap.Default.TransfershMaxDays = settings.transfershMaxDays;
+            Properties.ExportBeatmap.Default.TransfershMaxDownloads = settings.transfershMaxDownloads;
             Properties.ExportBeatmap.Default.Save();
         }
 
@@ -279,6 +292,23 @@ namespace osu_trainer.Forms
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private (bool, string) UploadWithTransferSh(string path)
+        {
+            // pass settings to uploader class
+            transfersh.MaxDays = settings.transfershMaxDays;
+            transfersh.MaxDownloads = settings.transfershMaxDownloads;
+
+            // perform uploader
+            var obj = transfersh.Upload(path).Result;
+            var downloadLink = obj.DownloadLink;
+
+            // store url in clipboard
+            this.Invoke(new Action(() => Clipboard.SetText(downloadLink)));
+            Console.WriteLine(obj.DownloadLink);
+            Console.WriteLine(obj.DeletionLink);
+            return (true, downloadLink);
         }
 
         private (bool, string) UploadWithShareX(string path)
@@ -389,6 +419,8 @@ namespace osu_trainer.Forms
             {
                 case UploadMode.SHAREX:
                     return this.UploadWithShareX(oszPath);
+                case UploadMode.TRANSFERSH:
+                    return this.UploadWithTransferSh(oszPath);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

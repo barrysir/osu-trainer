@@ -118,5 +118,29 @@ namespace osu_trainer.Properties {
                 this["SharexArguments"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int TransfershMaxDownloads {
+            get {
+                return ((int)(this["TransfershMaxDownloads"]));
+            }
+            set {
+                this["TransfershMaxDownloads"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int TransfershMaxDays {
+            get {
+                return ((int)(this["TransfershMaxDays"]));
+            }
+            set {
+                this["TransfershMaxDays"] = value;
+            }
+        }
     }
 }

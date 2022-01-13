@@ -71,6 +71,7 @@ namespace osu_trainer.Forms
             this.sharexPathBrowseButton = new System.Windows.Forms.Button();
             this.sharexPathLabel = new System.Windows.Forms.Label();
             this.uploadAdditionalSettings = new System.Windows.Forms.Panel();
+            this.transfershSettings = new System.Windows.Forms.Panel();
             this.exportSettings.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -462,12 +463,22 @@ namespace osu_trainer.Forms
             // uploadAdditionalSettings
             // 
             this.uploadAdditionalSettings.Controls.Add(this.sharexSettings);
+            this.uploadAdditionalSettings.Controls.Add(this.transfershSettings);
             this.uploadAdditionalSettings.Dock = System.Windows.Forms.DockStyle.Top;
             this.uploadAdditionalSettings.Location = new System.Drawing.Point(0, 168);
             this.uploadAdditionalSettings.Name = "uploadAdditionalSettings";
             this.uploadAdditionalSettings.Padding = new System.Windows.Forms.Padding(0, 1, 0, 0);
             this.uploadAdditionalSettings.Size = new System.Drawing.Size(435, 50);
             this.uploadAdditionalSettings.TabIndex = 20;
+            // 
+            // transfershSettings
+            // 
+            this.transfershSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.transfershSettings.Location = new System.Drawing.Point(0, 0);
+            this.transfershSettings.Name = "transfershSettings";
+            this.transfershSettings.Size = new System.Drawing.Size(432, 0);
+            this.transfershSettings.TabIndex = 20;
             // 
             // ExportBeatmapForm
             // 
@@ -546,5 +557,6 @@ namespace osu_trainer.Forms
         private Panel uploadAdditionalSettings;
         private Label sharexArgsLabel;
         private TextBox sharexArgsTextBox;
+        private Panel transfershSettings;
     }
 }
