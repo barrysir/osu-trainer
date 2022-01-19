@@ -283,7 +283,8 @@ namespace osu_trainer
                         }
                         if (includeBg)
                         {
-                            // todo
+                            string bgFilepath = Path.Combine(songFolder, beatmap.Background);
+                            archive.CreateEntryFromFile(bgFilepath, Path.GetFileName(bgFilepath));
                         }
                     }
                 }
