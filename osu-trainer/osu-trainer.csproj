@@ -251,6 +251,7 @@
       <DependentUpon>SongsFolderForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SongSpeedChanger.cs" />
+    <Compile Include="Uploaders\ShareX.cs" />
     <Compile Include="Uploaders\TransferSh.cs" />
     <Compile Include="UserProfile.cs" />
   </ItemGroup>
