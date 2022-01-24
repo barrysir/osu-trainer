@@ -84,8 +84,8 @@ namespace osu_trainer.Forms
         {
             public ExportMode exportMode;
             public UploadMode uploadMode;
-            public string exportFolderPath;
-            public string sharexPath;
+            public string rawExportPath;
+            public string rawSharexPath;
             public int sharexTickInterval;
             public bool sharexSkipUploadDetection;
             public int sharexBailoutTicks;
@@ -99,7 +99,7 @@ namespace osu_trainer.Forms
             {
                 get
                 {
-                    return (isNullString(exportFolderPath)) ? DefaultExportFolder() : exportFolderPath;
+                    return (isNullString(rawExportPath)) ? DefaultExportFolder() : rawExportPath;
                 }
             }
 
@@ -107,7 +107,7 @@ namespace osu_trainer.Forms
             {
                 get
                 {
-                    return (isNullString(sharexPath)) ? "sharex.exe" : sharexPath;
+                    return (isNullString(rawSharexPath)) ? "sharex.exe" : rawSharexPath;
                 }
             }
         }
@@ -207,17 +207,30 @@ namespace osu_trainer.Forms
 
         private void LoadPropertiesIntoSettings()
         {
+            // ugly validation but I guess we'll do this for now
+            // should probably move all the validation into the setting struct
+
+            // call as unsigned(nameof([setting here]))
+            // Returns setting value if >= 0, otherwise returns default setting value
+            Func<string, int> unsigned = (string attrname) =>
+            {
+                int val = (int)Properties.ExportBeatmap.Default.GetType().GetProperty(attrname).GetValue(Properties.ExportBeatmap.Default);
+                string defa = (string) Properties.ExportBeatmap.Default.Properties[attrname].DefaultValue;
+                int def = int.Parse(defa);
+                return (val >= 0) ? val : def;
+            };
+
             var newsettings = new SettingVars();
             newsettings.exportMode = (ExportMode) Properties.ExportBeatmap.Default.ExportMode;
             newsettings.uploadMode = (UploadMode) Properties.ExportBeatmap.Default.UploadMode;
-            newsettings.exportFolderPath = Properties.ExportBeatmap.Default.ExportFolderPath;
-            newsettings.sharexPath = Properties.ExportBeatmap.Default.SharexPath;
-            newsettings.sharexBailoutTicks = Properties.ExportBeatmap.Default.SharexBailoutTicks;
+            newsettings.rawExportPath = Properties.ExportBeatmap.Default.ExportFolderPath;
+            newsettings.rawSharexPath = Properties.ExportBeatmap.Default.SharexPath;
+            newsettings.sharexBailoutTicks = unsigned(nameof(Properties.ExportBeatmap.Default.SharexBailoutTicks));
             newsettings.sharexSkipUploadDetection = Properties.ExportBeatmap.Default.SharexSkipUploadDetection;
-            newsettings.sharexTickInterval = Properties.ExportBeatmap.Default.SharexTickInterval;
+            newsettings.sharexTickInterval = unsigned(nameof(Properties.ExportBeatmap.Default.SharexTickInterval));
             newsettings.sharexArguments = Properties.ExportBeatmap.Default.SharexArguments;
-            newsettings.transfershMaxDays = Properties.ExportBeatmap.Default.TransfershMaxDays;
-            newsettings.transfershMaxDownloads = Properties.ExportBeatmap.Default.TransfershMaxDownloads;
+            newsettings.transfershMaxDays = unsigned(nameof(Properties.ExportBeatmap.Default.TransfershMaxDays));
+            newsettings.transfershMaxDownloads = unsigned(nameof(Properties.ExportBeatmap.Default.TransfershMaxDownloads));
             this.settings = newsettings;
         }
 
@@ -225,8 +238,8 @@ namespace osu_trainer.Forms
         {
             Properties.ExportBeatmap.Default.ExportMode = (int)settings.exportMode;
             Properties.ExportBeatmap.Default.UploadMode = (int)settings.uploadMode;
-            Properties.ExportBeatmap.Default.ExportFolderPath = settings.exportFolderPath;
-            Properties.ExportBeatmap.Default.SharexPath = settings.sharexPath;
+            Properties.ExportBeatmap.Default.ExportFolderPath = settings.rawExportPath;
+            Properties.ExportBeatmap.Default.SharexPath = settings.rawSharexPath;
             Properties.ExportBeatmap.Default.SharexBailoutTicks = settings.sharexBailoutTicks;
             Properties.ExportBeatmap.Default.SharexSkipUploadDetection = settings.sharexSkipUploadDetection;
             Properties.ExportBeatmap.Default.SharexTickInterval = settings.sharexTickInterval;
@@ -242,7 +255,7 @@ namespace osu_trainer.Forms
             uploadMode.SelectedIndex = loadenum(uploadModeList, settings.uploadMode, i => i.Value);
 
             exportFolderTextBox.Text = settings.fullExportPath;
-            sharexPathTextBox.Text = settings.sharexPath;
+            sharexPathTextBox.Text = settings.rawSharexPath;
             sharexArgsTextBox.Text = settings.sharexArguments;
         }
 
@@ -252,12 +265,21 @@ namespace osu_trainer.Forms
             settings.exportMode = saveenum(exportModeList, exportMode.SelectedIndex, i => i.Value);
             settings.uploadMode = saveenum(uploadModeList, uploadMode.SelectedIndex, i => i.Value);
             string exportText = exportFolderTextBox.Text;
-            if (PathsEqual(exportText, DefaultExportFolder()))
+            try
             {
+                if (PathsEqual(exportText, DefaultExportFolder()))
+                {
+                    exportText = "";
+                }
+            } 
+            catch (Exception e)
+            {
+                Console.WriteLine($"Path invalid, going with default: {e}");
                 exportText = "";
             }
-            settings.exportFolderPath = exportText;
-            settings.sharexPath = sharexPathTextBox.Text;
+            
+            settings.rawExportPath = exportText;
+            settings.rawSharexPath = sharexPathTextBox.Text;
             settings.sharexArguments = sharexArgsTextBox.Text;
         }
 
@@ -339,7 +361,7 @@ namespace osu_trainer.Forms
                 sharex.Start();
             } catch (Win32Exception e) when (e.NativeErrorCode == 0x00000002) // display specialized error message when sharex couldn't be found
             {
-                throw new Exception($"ShareX executable ({settings.sharexPath}) couldn't be found -- please check your system PATH or provided custom path", e);
+                throw new Exception($"ShareX executable ({settings.rawSharexPath}) couldn't be found -- please check your system PATH or provided custom path", e);
             }
 
             // can't do this, because if sharex wasn't already running then this waits forever
