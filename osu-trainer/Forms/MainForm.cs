@@ -693,13 +693,15 @@ namespace osu_trainer
 
             // this can be cleaned up...
             // Read memory for current map
-            string beatmapFolder = osuReader.GetMapFolderName();
             string beatmapFilename = osuReader.GetOsuFileName();
+            string beatmapFolder = osuReader.GetMapFolderName();
 
             var invalidChars = Path.GetInvalidFileNameChars();
 
             // Read unsuccessful
             if (string.IsNullOrWhiteSpace(beatmapFilename) || beatmapFilename.Any(c => invalidChars.Contains(c)))
+                return;
+            if (string.IsNullOrWhiteSpace(beatmapFolder) || beatmapFolder.Any(c => invalidChars.Contains(c)))
                 return;
 
             // Beatmap name hasn't changed since last read
@@ -708,7 +710,7 @@ namespace osu_trainer
             previousBeatmapRead = beatmapFilename;
 
             // Try to locate the beatmap
-            string absoluteFilename = Path.Combine(userSongsFolder, beatmapFolder, beatmapFilename);
+            string absoluteFilename = Path.Combine(userSongsFolder, beatmapFolder.TrimEnd(), beatmapFilename);
             if (!File.Exists(absoluteFilename))
                 return;
 
@@ -1061,12 +1063,12 @@ namespace osu_trainer
             try {
                 File.WriteAllLines("version.txt", lines);
             }
-            catch (UnauthorizedAccessException e)
+            catch (UnauthorizedAccessException)
             {
                 MessageBox.Show("Permission to write to version.txt was denied. Check your antivirus, or try running osu trainer with administrator priveledges.");
                 return;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("Unable to write to version.txt");
                 return;
