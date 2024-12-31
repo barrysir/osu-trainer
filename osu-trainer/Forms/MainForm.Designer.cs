@@ -24,6 +24,74 @@ namespace osu_trainer
 
         #region Windows Form Designer generated code
 
+        private AntiAliasedLabel BpmMultiplierLabel;
+        private System.Windows.Forms.Timer BeatmapUpdateTimer;
+        private AntiAliasedLabel OriginalBpmLabel;
+        private AntiAliasedLabel NewBpmLabel;
+        private OsuButton GenerateMapButton;
+        private System.Windows.Forms.Panel BottomPanel;
+        private System.Windows.Forms.Panel TopPanel;
+        private System.Windows.Forms.Panel middlePanel;
+        private System.Windows.Forms.Panel Middle1Panel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private AntiAliasedLabel hplabel;
+        private System.Windows.Forms.TextBox HPDisplay;
+        private OptionSlider HPSlider;
+        private AntiAliasedLabel odlabel;
+        private System.Windows.Forms.TextBox ODDisplay;
+        private OptionSlider ODSlider;
+        private AntiAliasedLabel arlabel;
+        private System.Windows.Forms.TextBox ARDisplay;
+        private OptionSlider ARSlider;
+        private AntiAliasedLabel cslabel;
+        private System.Windows.Forms.TextBox CSDisplay;
+        private OptionSlider CSSlider;
+        private System.Windows.Forms.TextBox NewBpmRangeTextBox;
+        private System.Windows.Forms.TextBox OriginalBpmRangeTextBox;
+        private System.Windows.Forms.TextBox OriginalBpmTextBox;
+        private OsuButton ResetButton;
+        private System.Windows.Forms.Timer OsuRunningTimer;
+        private OsuCheckBox ScaleARCheck;
+        private OsuCheckBox ChangePitchCheck;
+        private OsuCheckBox ScaleODCheck;
+        private ToggleIconButton ODLockCheck;
+        private ToggleIconButton ARLockCheck;
+        private ToggleIconButton CSLockCheck;
+        private ToggleIconButton HPLockCheck;
+        private SongDisplay SongDisplay;
+        private OsuCheckBox NoSpinnersCheck;
+        private System.Windows.Forms.Button closeButton;
+        private System.Windows.Forms.Button minimizeButton;
+        private System.Windows.Forms.Panel titlePanel;
+        private OptionSlider BpmSlider;
+        private ToggleIconButton BpmLockCheck;
+        private OsuCheckBox HRCheck;
+        private OsuButton SongsFolderButton;
+        private ScrollableTextBox NewBpmTextBox;
+        private System.Windows.Forms.TextBox BpmMultiplierTextBox;
+        private System.Windows.Forms.Button renameButton1;
+        private System.Windows.Forms.Button saveButton1;
+        private OsuButton profileButton3;
+        private OsuButton profileButton2;
+        private OsuButton profileButton1;
+        private System.Windows.Forms.Button saveButton3;
+        private System.Windows.Forms.Button saveButton2;
+        private System.Windows.Forms.Button renameButton3;
+        private System.Windows.Forms.Button renameButton2;
+        private OsuButton profileButton4;
+        private System.Windows.Forms.Button saveButton4;
+        private System.Windows.Forms.Button renameButton4;
+        private System.Windows.Forms.Button editHotkeysButton;
+        public System.ComponentModel.BackgroundWorker BackgroundWorker;
+        private System.Windows.Forms.Timer formAnimationTimer;
+        private System.Windows.Forms.Button showExtrasButton;
+        private System.Windows.Forms.Panel extrasPanel;
+        private System.Windows.Forms.Button button1;
+        private OsuCheckBox highQualityMp3Check;
+        private OsuCheckBox updatesCheck;
+        private System.Windows.Forms.Panel exportPanel;
+        private OsuButton ExportBeatmapButton;
+
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
@@ -56,7 +124,6 @@ namespace osu_trainer
             this.HPDisplay = new System.Windows.Forms.TextBox();
             this.BottomPanel = new System.Windows.Forms.Panel();
             this.TopPanel = new System.Windows.Forms.Panel();
-            this.spectrogramButton = new System.Windows.Forms.Button();
             this.OsuRunningTimer = new System.Windows.Forms.Timer(this.components);
             this.closeButton = new System.Windows.Forms.Button();
             this.minimizeButton = new System.Windows.Forms.Button();
@@ -488,7 +555,6 @@ namespace osu_trainer
             // TopPanel
             // 
             this.TopPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(27)))), ((int)(((byte)(47)))));
-            this.TopPanel.Controls.Add(this.spectrogramButton);
             this.TopPanel.Controls.Add(this.SongDisplay);
             this.TopPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.TopPanel.Location = new System.Drawing.Point(0, 30);
@@ -1277,73 +1343,5 @@ namespace osu_trainer
         }
 
         #endregion
-        private AntiAliasedLabel BpmMultiplierLabel;
-        private System.Windows.Forms.Timer BeatmapUpdateTimer;
-        private AntiAliasedLabel OriginalBpmLabel;
-        private AntiAliasedLabel NewBpmLabel;
-        private OsuButton GenerateMapButton;
-        private System.Windows.Forms.Panel BottomPanel;
-        private System.Windows.Forms.Panel TopPanel;
-        private System.Windows.Forms.Panel middlePanel;
-        private System.Windows.Forms.Panel Middle1Panel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private AntiAliasedLabel hplabel;
-        private System.Windows.Forms.TextBox HPDisplay;
-        private OptionSlider HPSlider;
-        private AntiAliasedLabel odlabel;
-        private System.Windows.Forms.TextBox ODDisplay;
-        private OptionSlider ODSlider;
-        private AntiAliasedLabel arlabel;
-        private System.Windows.Forms.TextBox ARDisplay;
-        private OptionSlider ARSlider;
-        private AntiAliasedLabel cslabel;
-        private System.Windows.Forms.TextBox CSDisplay;
-        private OptionSlider CSSlider;
-        private System.Windows.Forms.TextBox NewBpmRangeTextBox;
-        private System.Windows.Forms.TextBox OriginalBpmRangeTextBox;
-        private System.Windows.Forms.TextBox OriginalBpmTextBox;
-        private OsuButton ResetButton;
-        private System.Windows.Forms.Timer OsuRunningTimer;
-        private OsuCheckBox ScaleARCheck;
-        private OsuCheckBox ChangePitchCheck;
-        private OsuCheckBox ScaleODCheck;
-        private ToggleIconButton ODLockCheck;
-        private ToggleIconButton ARLockCheck;
-        private ToggleIconButton CSLockCheck;
-        private ToggleIconButton HPLockCheck;
-        private SongDisplay SongDisplay;
-        private OsuCheckBox NoSpinnersCheck;
-        private System.Windows.Forms.Button closeButton;
-        private System.Windows.Forms.Button minimizeButton;
-        private System.Windows.Forms.Panel titlePanel;
-        private OptionSlider BpmSlider;
-        private ToggleIconButton BpmLockCheck;
-        private OsuCheckBox HRCheck;
-        private OsuButton SongsFolderButton;
-        private ScrollableTextBox NewBpmTextBox;
-        private System.Windows.Forms.TextBox BpmMultiplierTextBox;
-        private System.Windows.Forms.Button renameButton1;
-        private System.Windows.Forms.Button saveButton1;
-        private OsuButton profileButton3;
-        private OsuButton profileButton2;
-        private OsuButton profileButton1;
-        private System.Windows.Forms.Button saveButton3;
-        private System.Windows.Forms.Button saveButton2;
-        private System.Windows.Forms.Button renameButton3;
-        private System.Windows.Forms.Button renameButton2;
-        private OsuButton profileButton4;
-        private System.Windows.Forms.Button saveButton4;
-        private System.Windows.Forms.Button renameButton4;
-        private System.Windows.Forms.Button editHotkeysButton;
-        public System.ComponentModel.BackgroundWorker BackgroundWorker;
-        private System.Windows.Forms.Timer formAnimationTimer;
-        private System.Windows.Forms.Button showExtrasButton;
-        private System.Windows.Forms.Panel extrasPanel;
-        private System.Windows.Forms.Button button1;
-        private OsuCheckBox highQualityMp3Check;
-        private OsuCheckBox updatesCheck;
-        private System.Windows.Forms.Button spectrogramButton;
-        private System.Windows.Forms.Panel exportPanel;
-        private OsuButton ExportBeatmapButton;
     }
 }
