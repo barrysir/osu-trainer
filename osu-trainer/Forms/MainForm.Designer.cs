@@ -1,4 +1,4 @@
-﻿using osu_trainer.Controls;
+using osu_trainer.Controls;
 
 namespace osu_trainer
 {
@@ -496,20 +496,6 @@ namespace osu_trainer
             this.TopPanel.Padding = new System.Windows.Forms.Padding(10);
             this.TopPanel.Size = new System.Drawing.Size(427, 121);
             this.TopPanel.TabIndex = 12;
-            // 
-            // spectrogramButton
-            // 
-            this.spectrogramButton.FlatAppearance.BorderSize = 0;
-            this.spectrogramButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.spectrogramButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.spectrogramButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(167)))), ((int)(((byte)(154)))), ((int)(((byte)(233)))));
-            this.spectrogramButton.Location = new System.Drawing.Point(10, 10);
-            this.spectrogramButton.Name = "spectrogramButton";
-            this.spectrogramButton.Size = new System.Drawing.Size(85, 26);
-            this.spectrogramButton.TabIndex = 27;
-            this.spectrogramButton.Text = "Note Graph";
-            this.spectrogramButton.UseVisualStyleBackColor = true;
-            this.spectrogramButton.Click += new System.EventHandler(this.spectrogramButton_Click);
             // 
             // OsuRunningTimer
             // 

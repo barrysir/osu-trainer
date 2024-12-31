@@ -1074,18 +1074,6 @@ namespace osu_trainer
             return;
         }
 
-        private void spectrogramButton_Click(object sender, EventArgs e)
-        {
-            if (SpectrogramForm.Instance != null)
-                SpectrogramForm.Instance.Close();
-            else
-            {
-                var form = new SpectrogramForm(editor);
-                form.Show();
-                Location = new Point(Location.X, System.Math.Max(form.Height, Location.Y));
-            }
-        }
-
         private void ExportBeatmapButton_Click(object sender, EventArgs e)
         {
             if (exportBeatmapInstance == null || exportBeatmapInstance.IsDisposed)
