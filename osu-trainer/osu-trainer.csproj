@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>osu_trainer</RootNamespace>
     <AssemblyName>osu-trainer</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
@@ -35,7 +35,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -46,7 +46,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -80,8 +80,8 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FSharp.Core.8.0.100\lib\netstandard2.0\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharp.Core.6.0.1\lib\netstandard2.0\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Registry, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.4.7.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
@@ -128,11 +128,11 @@
     <Reference Include="NVorbis">
       <HintPath>..\packages\NVorbis.0.10.4\lib\net45\NVorbis.dll</HintPath>
     </Reference>
-    <Reference Include="OsuMemoryDataProvider, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OsuMemoryDataProvider.0.10.3\lib\net472\OsuMemoryDataProvider.dll</HintPath>
+    <Reference Include="ScottPlot, Version=4.1.27.0, Culture=neutral, PublicKeyToken=86698dc10387c39e, processorArchitecture=MSIL">
+      <HintPath>..\packages\ScottPlot.4.1.27\lib\net461\ScottPlot.dll</HintPath>
     </Reference>
-    <Reference Include="ProcessMemoryDataFinder, Version=0.8.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ProcessMemoryDataFinder.0.8.5\lib\net472\ProcessMemoryDataFinder.dll</HintPath>
+    <Reference Include="ScottPlot.WinForms, Version=4.1.27.0, Culture=neutral, PublicKeyToken=5df1dfa5321e734b, processorArchitecture=MSIL">
+      <HintPath>..\packages\ScottPlot.WinForms.4.1.27\lib\net461\ScottPlot.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -220,6 +220,11 @@
     <Compile Include="Controls\ToggleIconButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Properties\ExportBeatmap.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>ExportBeatmap.settings</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DeleteMp3sForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -251,6 +256,12 @@
     <Compile Include="Forms\RenameProfileForm.Designer.cs">
       <DependentUpon>RenameProfileForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SpectrogramForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SpectrogramForm.Designer.cs">
+      <DependentUpon>SpectrogramForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\UpdaterForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -268,7 +279,6 @@
     <Compile Include="Controls\NumericUpDownFix.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Properties\ExportBeatmap.Designer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -298,10 +308,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Properties\ExportBeatmap.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>ExportBeatmap.Designer.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\DataSources\MainForm.datasource" />
-    <None Include="Properties\ExportBeatmap.settings" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -358,6 +371,9 @@
     <EmbeddedResource Include="Forms\RenameProfileForm.resx">
       <DependentUpon>RenameProfileForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SpectrogramForm.resx">
+      <DependentUpon>SpectrogramForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\UpdaterForm.resx">
       <DependentUpon>UpdaterForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -394,10 +410,13 @@
       <Project>{8340f8a9-185e-48d4-b544-3809c10cbd62}</Project>
       <Name>key preview</Name>
     </ProjectReference>
+    <ProjectReference Include="submodules\ProcessMemoryDataFinder\OsuMemoryDataProvider\OsuMemoryDataProvider.csproj">
+      <Project>{b7eedcdd-8f5a-46a9-97af-4294d7ff912f}</Project>
+      <Name>OsuMemoryDataProvider</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir lib
 move Microsoft.WindowsAPICodePack.Shell.dll lib
 move Microsoft.WindowsAPICodePack.Shell.xml lib
 move Microsoft.WindowsAPICodePack.ShellExtensions.dll lib
@@ -441,6 +460,13 @@ move Newtonsoft.Json.xml lib
 move OsuMemoryDataProvider.dll lib
 move ProcessMemoryDataFinder.dll lib</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\NAudio.Lame.2.0.0\build\NAudio.Lame.targets" Condition="Exists('..\packages\NAudio.Lame.2.0.0\build\NAudio.Lame.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NAudio.Lame.2.0.0\build\NAudio.Lame.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NAudio.Lame.2.0.0\build\NAudio.Lame.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
