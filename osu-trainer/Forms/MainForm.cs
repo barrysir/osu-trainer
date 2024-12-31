@@ -2,6 +2,8 @@
 using osu_trainer.Controls;
 using osu_trainer.Forms;
 using OsuMemoryDataProvider;
+using OsuMemoryDataProvider.OsuMemoryModels.Direct;
+using ProcessMemoryDataFinder.API;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,7 +26,7 @@ namespace osu_trainer
         // Beatmap
         private string userSongsFolder = null;
 
-        private IOsuMemoryReader osuReader;
+        private StructuredOsuMemoryReader osuReader;
 
         // Common Control Lists
         private List<Label> dumbLabels;
@@ -105,7 +107,7 @@ namespace osu_trainer
             Hotkeys.Add(Properties.Settings.Default.HotkeyProfile4);
 
             // Init object instances
-            osuReader = OsuMemoryReader.Instance.GetInstanceForWindowTitleHint("");
+            osuReader = new StructuredOsuMemoryReader();
             editor = new BeatmapEditor(this);
 
             // Add event handlers (observers)
@@ -693,10 +695,11 @@ namespace osu_trainer
 
             // this can be cleaned up...
             // Read memory for current map
-            string beatmapFilename = osuReader.GetOsuFileName();
-            string beatmapFolder = osuReader.GetMapFolderName();
+            osuReader.TryRead(osuReader.OsuMemoryAddresses.Beatmap);
+            string beatmapFilename = osuReader.OsuMemoryAddresses.Beatmap.OsuFileName;
+            string beatmapFolder = osuReader.OsuMemoryAddresses.Beatmap.FolderName;
 
-            var invalidChars = Path.GetInvalidFileNameChars();
+            var invalidChars = Path.GetInvalidPathChars();
 
             // Read unsuccessful
             if (string.IsNullOrWhiteSpace(beatmapFilename) || beatmapFilename.Any(c => invalidChars.Contains(c)))
@@ -712,7 +715,7 @@ namespace osu_trainer
             // Try to locate the beatmap
             string absoluteFilename = Path.Combine(userSongsFolder, beatmapFolder.TrimEnd(), beatmapFilename);
             if (!File.Exists(absoluteFilename))
-                return;
+                return; 
 
             // signal the editor class to load this beatmap sometime in the future
             editor.RequestBeatmapLoad(absoluteFilename);
@@ -737,15 +740,15 @@ namespace osu_trainer
                 if (userSongsFolder == null || userSongsFolder == "")
                 {
                     // Try to get osu songs folder
+                    // TODO: wrap with try catch
                     var osuExePath = processes[0].MainModule.FileName;
                     userSongsFolder = Path.Combine(Path.GetDirectoryName(osuExePath), "Songs");
                     Properties.Settings.Default.SongsFolder = userSongsFolder;
                     Properties.Settings.Default.Save();
                 }
             }
-            int intStatus = 0;
-            osuReader.GetCurrentStatus(out intStatus);
-            OsuMemoryStatus status = (OsuMemoryStatus)intStatus;
+            osuReader.TryRead(osuReader.OsuMemoryAddresses.GeneralData);
+            OsuMemoryStatus status = (OsuMemoryStatus)(osuReader.OsuMemoryAddresses.GeneralData.OsuStatus);
 
             if (status == OsuMemoryStatus.SongSelect || status == OsuMemoryStatus.MultiplayerRoom || status == OsuMemoryStatus.MultiplayerSongSelect)
                 mapSelectScreen = true;
